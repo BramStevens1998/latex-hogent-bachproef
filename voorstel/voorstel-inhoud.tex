@@ -3,70 +3,45 @@
 \section{Introductie}%
 \label{sec:introductie}
 
-Waarover zal je bachelorproef gaan? Introduceer het thema en zorg dat volgende zaken zeker duidelijk aanwezig zijn:
+Meta, voormalig gekend als facebook, ontwikkelde in 2012 een query computertaal genaamd GraphQL om een intern probleem op te lossen. Deze werd in 2015 publiek gesteld en nam sindsdien enorm aan populariteit toe. Veel gekende bedrijven zoals Airbnb, Audi, GitHub, KLM, NBC, PayPal en nog vele anderen gebruiken de computertaal ondertussen al. Ook bij Delaware groeit nu de interesse om zich te verdiepen in GraphQL en de toepassingen die deze technologie met zich meedraagt, rekeninghoudend of dit voor hun een opportuniteit biedt om hun software te verbeteren. In het onderzoek zal dan ook aan bod komen wat die opportuniteiten juist inhouden. Delaware ontwikkelde zelf ook een accelerator die als benaming “Data Accelerator“ kreeg. Wat deze exact doet zal verder uitgelegd worden in sectie 2 - Literatuurstudie.
 
-\begin{itemize}
-  \item kaderen thema
-  \item de doelgroep
-  \item de probleemstelling en (centrale) onderzoeksvraag
-  \item de onderzoeksdoelstelling
-\end{itemize}
+Vanwege de mogelijke voordelen die een implementatie of integratie van GraphQL met de Data Accelerator kan bieden, wordt dit dus ook het grondthema van deze bachelorproef. Dit op zijn beurt zal theoretisch benaderd worden met als doel naar verloop een fysiek resultaat op te leveren. Deze opzet kan beschreven worden met de volgende onderzoeksvraag: ''Hoe kan GraphQL geïmplementeerd worden in een zelfontwikkelde accelerator?''
 
-Denk er aan: een typische bachelorproef is \textit{toegepast onderzoek}, wat betekent dat je start vanuit een concrete probleemsituatie in bedrijfscontext, een \textbf{casus}. Het is belangrijk om je onderwerp goed af te bakenen: je gaat voor die \textit{ene specifieke probleemsituatie} op zoek naar een goede oplossing, op basis van de huidige kennis in het vakgebied.
+Het oogmerk van dit onderzoek is reeds beschreven in de onderzoeksvraag. Echter om deze te behalen moeten de volgende deelvragen beantwoord geraken: \newline - Wat is GraphQL?\newline - Wat is een (Data) Accelerator?\newline - Kan Data Accelerator GraphQL benutten?\newline - Welke integratie mogelijkheden zijn er voor GraphQL binnen Data Accelerator?
 
-De doelgroep moet ook concreet en duidelijk zijn, dus geen algemene of vaag gedefinieerde groepen zoals \emph{bedrijven}, \emph{developers}, \emph{Vlamingen}, enz. Je richt je in elk geval op it-professionals, een bachelorproef is geen populariserende tekst. Eén specifiek bedrijf (die te maken hebben met een concrete probleemsituatie) is dus beter dan \emph{bedrijven} in het algemeen.
+Het mikpunt van dit onderzoek is om zo snel mogelijk een concreet voorbeeld te kunnen bieden. Dit is zichtbaar aan de volgorde van de hierbovenstaande deelvragen die opgelijst zijn.
 
-Formuleer duidelijk de onderzoeksvraag! De begeleiders lezen nog steeds te veel voorstellen waarin we geen onderzoeksvraag terugvinden.
-
-Schrijf ook iets over de doelstelling. Wat zie je als het concrete eindresultaat van je onderzoek, naast de uitgeschreven scriptie? Is het een proof-of-concept, een rapport met aanbevelingen, \ldots Met welk eindresultaat kan je je bachelorproef als een succes beschouwen?
 
 %---------- Stand van zaken ---------------------------------------------------
 
-\section{State-of-the-art}%
-\label{sec:state-of-the-art}
+\section{Literatuurstudie}%
+\label{sec:Literatuurstudie}
 
-Hier beschrijf je de \emph{state-of-the-art} rondom je gekozen onderzoeksdomein, d.w.z.\ een inleidende, doorlopende tekst over het onderzoeksdomein van je bachelorproef. Je steunt daarbij heel sterk op de professionele \emph{vakliteratuur}, en niet zozeer op populariserende teksten voor een breed publiek. Wat is de huidige stand van zaken in dit domein, en wat zijn nog eventuele open vragen (die misschien de aanleiding waren tot je onderzoeksvraag!)?
+\subsection{Wat is GraphQL?}
+Graph Query Language beter gekend als GraphQL is een query computertaal. Deze maakt gebruik van een API om niet zelf rechtstreeks de data te behandelen. GraphQL brengt een zelfde resultaat tot stand als soortgelijke software, maar op een verschillende manier. Namelijk, de aanvragen worden anders opgebouwd zodat juist de benodigde data ter beschikking komt. De computertaal werd ontwikkeld in 2012 door facebook uit noodzaak tijdens hun converteren naar hun native apps, voorheen mobile apps,
+in dienst van hun mobiele website. Soortgelijke software kon hun vereisten niet voldoen vanwege de grote disproportie tussende data en de hoeveelheid server queries die nodig waren. Facebook zocht naar een manier om queries die serverdata collecteren gelijkend te maken aan de samenstelling van hun data. Op deze manier kon er gerichter gewerkt worden om juist de benodigde data ter beschikking te stellen \autocite{Brysbaert2021}.
 
-Je mag de titel van deze sectie ook aanpassen (literatuurstudie, stand van zaken, enz.). Zijn er al gelijkaardige onderzoeken gevoerd? Wat concluderen ze? Wat is het verschil met jouw onderzoek?
+\subsection{(Data) Accelerator}
+Accelerators kunnen gedefinieerd worden als een inhoud bevattende verzameling die inspelen op een vaak voorkomend probleem rondom data kwaliteit. Dit zal vaak in functie van een geografisch gebied of een type van industrie zijn. Deze kan aan de hand van herbruikbare objecten of gespecifieerde regels data analyseren en uitbreiden binnenin een bedrijf. Mogelijks kan deze ook over data domeinen beschikken om verschillende types van info die de data bevat te ontdekken\newline\autocite{Informatica2021}.
 
-Verwijs bij elke introductie van een term of bewering over het domein naar de vakliteratuur, bijvoorbeeld~\autocite{Hykes2013}! Denk zeker goed na welke werken je refereert en waarom.
+Binnenin het computerlandschap zijn er vaak transities van homogene naar heterogene knooppunten. Dit wil zeggen dat in plaats van eenzelfde functie deze gecategoriseerd worden naar gelang hun functie. Dit kan u best vergelijken met het verschil tussen een koper en een verkoper van schoenen. Accelerators kunnen in functie staan van een grafische processor, computerchips die over meerdere kernen beschikken, schakelingen van logische componenten of een microprocessor om digitale signalen te bewerken. Hier is hun doel dan om taken die heel reken-intensief zijn, te lichten voor het systeem \autocite{LopezNovoa2015}.
 
-Draag zorg voor correcte literatuurverwijzingen! Een bronvermelding hoort thuis \emph{binnen} de zin waar je je op die bron baseert, dus niet er buiten! Maak meteen een verwijzing als je gebruik maakt van een bron. Doe dit dus \emph{niet} aan het einde van een lange paragraaf. Baseer nooit teveel aansluitende tekst op eenzelfde bron.
-
-Als je informatie over bronnen verzamelt in JabRef, zorg er dan voor dat alle nodige info aanwezig is om de bron terug te vinden (zoals uitvoerig besproken in de lessen Research Methods).
-
-% Voor literatuurverwijzingen zijn er twee belangrijke commando's:
-% \autocite{KEY} => (Auteur, jaartal) Gebruik dit als de naam van de auteur
-%   geen onderdeel is van de zin.
-% \textcite{KEY} => Auteur (jaartal)  Gebruik dit als de auteursnaam wel een
-%   functie heeft in de zin (bv. ``Uit onderzoek door Doll & Hill (1954) bleek
-%   ...'')
-
-Je mag deze sectie nog verder onderverdelen in subsecties als dit de structuur van de tekst kan verduidelijken.
+De accelerator die in gebruik gesteld wordt van Delaware in functie van dit onderzoek zal verder uitgespit worden in deze bachelorproef zodat er een duidelijk gedefinieerde basis is waaruit er vertrokken wordt.
 
 %---------- Methodologie ------------------------------------------------------
 \section{Methodologie}%
 \label{sec:methodologie}
 
-Hier beschrijf je hoe je van plan bent het onderzoek te voeren. Welke onderzoekstechniek ga je toepassen om elk van je onderzoeksvragen te beantwoorden? Gebruik je hiervoor literatuurstudie, interviews met belanghebbenden (bv.~voor requirements-analyse), experimenten, simulaties, vergelijkende studie, risico-analyse, PoC, \ldots?
+Om de opgelijste deelvragen te kunnen beantwoorden is er een literatuurstudie nodig als startpunt. Daarom is dit dus ook de eerste fase van het onderzoek. In de literatuurstudie kan het volgende nagekeken worden:\newline Wat is de exacte werking van GraphQL en hoe implementeerd of integreert men dit?\newline Welke opportuniteiten of nadelen kan GraphQL opleveren?\newline Kan men GraphQL integreren in een accelerator of moet men implementeren? \newline Wat is de complexiteit van de uit te voeren integratie of implementatie?
 
-Valt je onderwerp onder één van de typische soorten bachelorproeven die besproken zijn in de lessen Research Methods (bv.\ vergelijkende studie of risico-analyse)? Zorg er dan ook voor dat we duidelijk de verschillende stappen terug vinden die we verwachten in dit soort onderzoek!
-
-Vermijd onderzoekstechnieken die geen objectieve, meetbare resultaten kunnen opleveren. Enquêtes, bijvoorbeeld, zijn voor een bachelorproef informatica meestal \textbf{niet geschikt}. De antwoorden zijn eerder meningen dan feiten en in de praktijk blijkt het ook bijzonder moeilijk om voldoende respondenten te vinden. Studenten die een enquête willen voeren, hebben meestal ook geen goede definitie van de populatie, waardoor ook niet kan aangetoond worden dat eventuele resultaten representatief zijn.
-
-Uit dit onderdeel moet duidelijk naar voor komen dat je bachelorproef ook technisch voldoen\-de diepgang zal bevatten. Het zou niet kloppen als een bachelorproef informatica ook door bv.\ een student marketing zou kunnen uitgevoerd worden.
-
-Je beschrijft ook al welke tools (hardware, software, diensten, \ldots) je denkt hiervoor te gebruiken of te ontwikkelen.
-
-Probeer ook een tijdschatting te maken. Hoe lang zal je met elke fase van je onderzoek bezig zijn en wat zijn de concrete \emph{deliverables} in elke fase?
+Hiervoor wordt er een case study uitgevoerd die kan nagaan welke oplossing juist het meest voordelig is en of Microsoft Azure al dan niet soortgelijke implementaties reeds bevat. Zo kunnen we nagaan of deze implementatie nodig is of op een andere manier bereikt kan worden.
 
 %---------- Verwachte resultaten ----------------------------------------------
-\section{Verwacht resultaat, conclusie}%
-\label{sec:verwachte_resultaten}
+\section{Verwachte resultaat}
+\label{sec:verwachte resultaat}
+Het verwachte resultaat van deze case study moet een praktische oplossing zijn voor de implementatie van GraphQL. Dit moet een overzicht kunnen leveren aan lezers die zich willen verdiepen in deze kwestie. Voor Delaware moet het mogelijk zijn om evenals een duidelijk stappenplan te verkrijgen om dit dan effectief ook uit te voeren indien gewenst. De mogelijke alternatieve oplossingen binnen Azure zouden hier dan ook aangekaart worden.
 
-Hier beschrijf je welke resultaten je verwacht. Als je metingen en simulaties uitvoert, kan je hier al mock-ups maken van de grafieken samen met de verwachte conclusies. Benoem zeker al je assen en de onderdelen van de grafiek die je gaat gebruiken. Dit zorgt ervoor dat je concreet weet welk soort data je moet verzamelen en hoe je die moet meten.
-
-Wat heeft de doelgroep van je onderzoek aan het resultaat? Op welke manier zorgt jouw bachelorproef voor een meerwaarde?
-
-Hier beschrijf je wat je verwacht uit je onderzoek, met de motivatie waarom. Het is \textbf{niet} erg indien uit je onderzoek andere resultaten en conclusies vloeien dan dat je hier beschrijft: het is dan juist interessant om te onderzoeken waarom jouw hypothesen niet overeenkomen met de resultaten.
+\section{Verwachte conclusie}
+\label{sec:verwachte conclusiet}
+Als echter vele bedrijven reeds de stap zetten en gebruikmaken van GraphQL is dit voor Delaware ook interessant om te zien welke mogelijke toepassingen er allemaal zijn die in hun voordeel spelen. Er is een grote kans dat het mogelijk is om GraphQL en Data Accelerator samen te laten werken via integratie of implementatie. Evenals is het niet ondenkbaar dat Microsoft Azure functies bevat waarvoor het onnodig kan zijn wegens betere alternatieven.
 
