@@ -37,19 +37,12 @@ Runtime kan beschreven worden als de looptijd van een programma. Dit begint bij 
 \subsection{\IfLanguageName{dutch}{Graaf}{Graph}}%
 \label{sec:graaf}
 Een graaf kan gezien worden als een groep punten benoemd als knopen en hun onderlinge verbindingen, genaamd bogen. Een verbinding kan ook een pijl bevatten om zijn richting aan te tonen. Op deze manier kunnen de relaties tussen verscheidene knopen in beeld gebracht worden. In het werkstuk van \textcite{Brysbaert2021} wordt dit voorgesteld als een schema waarbij de knopen gebruikers zijn van het sociale media platform facebook en bogen de onderlinge vriendschap voorstellen. De bogen bevatten ook een pijl naar beide richtingen, omdat een vriendschap op het platform een wederzijdse toepassing is. Dit is niet altijd een vereiste. Als we het voorbeeld van youtube gebruiken, kunnen we vaststellen dat het mogelijk is je te aboneren op een kanaal van een persoon. Dit wilt niet zeggen dat deze in kwestie daarom ook geabonneerd is op jouw kanaal. In dat geval zou de pijl dan een enkele richting hebben.
-DE hierboven uitgelegde werking kan men ook toepassen op een bestaande databank. Er zijn verbindingen tussen verschillende soorten data die elk ook hun specieke kenmerken bevatten. Via GraphQL kan men dus hierop inspelen en dichter op de actuele werking van een databank te werk gaan.
+De hierboven uitgelegde werking kan men ook toepassen op een bestaande databank. Er zijn verbindingen tussen verschillende soorten data die elk ook hun specieke kenmerken bevatten. Via GraphQL kan men dus hierop inspelen en dichter op de actuele werking van een databank te werk gaan.
 (figuur gebruikersFacebook)
 
-\subsection{\IfLanguageName{dutch}{Uitvoering}{Performance}}%
-\label{sec:Uitvoering}
-
-
-\subsection{\IfLanguageName{dutch}{Gebruikservaring}{User experience}}%
-\label{sec:Gebruikservaring}
-
-
-\subsection{\IfLanguageName{dutch}{Architectuur}{Architecture}}%
-\label{sec:Architectuur}
+\subsection{\IfLanguageName{dutch}{Gebruik}{Usage}}%
+\label{sec:Gebruik}
+Bij de sterke punten van GraphQL hoort toch wel de preventie van over- en underfetching. Overfetching is een probleem die zich vaak voordoet bij eerder traditionele programmas, waarbij er te veel data opgevraagd wordt ten opzichte van wat benodigd is. Gebruikmakend van GraphQL kan men zich toespitsen op juist de data die van toepassing is. Dit zorgt voor een lager verbuik van bandbreedte, dat voordelig is als men ook gebruikt maakt van mobiele aparaten zoals ook facebook doet. Het omgekeerde kan zich echter ook voor doen, bij underfetching wordt niet alle opgevraagde data weergeven in één keer. Dit kan voorgesteld worden als een boodschappenlijstje bij colruyt waarbij er voor elke productbeschrijving een aparte query zou moeten uitgevoerd worden. Dit is ook een probleem waar GraphQL op inspeeld.
 
 
 \subsection{\IfLanguageName{dutch}{API}{API}}%
