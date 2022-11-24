@@ -15,9 +15,11 @@ Soms wil je de auteur niet expliciet vernoemen, dan gebruik je \texttt{$\backsla
 \section{\IfLanguageName{dutch}{GraphQL}{GraphQL}}%
 \label{sec:GraphQL}
 Deze sectie van de literatuurstudie zal zich toespitsen op GraphQL en de belangrijke begrippen hieromtrent. Zo kan er vorm worden gegeven aan de probleemstelling die opgelost dient te worden. Via deze weg zal de context rondom GraphQL en de opvolgende deelvragen een duidelijk beeld scheppen betreffende deze technologie.
+
 In dit deel spitsen we ons toe op de eerste deelvraag van dit onderzoek: “Wat is GraphQL?”
 De hier opvolgende secties zijn opgesteld naarmate de benodigde onderdelen die helpen een beter beeld te scheppen over de werking van GraphQL en hoe deze software tot stand is gekomen. Van uit de probleemstelling wordt er vertrokken om dan doorheen deze studie tot een oplossing te komen, namelijk een werkende implementatie gebruikmakend van de Data Accelerator.
 Dit wordt gevolgd door toelichting van de Data Accelerator. Hierin zal de werking en toepassing van de software binnen een werkomgeving in kaart gebracht worden, zodanig dat met begrip van voorgaande secties deze ook op niet mis te verstane wijze in beeld gebracht kan worden.
+
 Het volgende deel zal dan de mogelijke voordelen bespreken van GraphQL en deze koppelen aan de Data Accelerator. Hiervoor zal er gekeken worden naar reeds bestaande onderzoeken die gelijkaardige materie duiding geven.
 Tot slot zal er binnen de literatuurstudie besproken worden welke mogelijke integratie opties er zijn binnen de Data Accelerator en een synopsis van desbetreffende mogelijkheden.
 
@@ -36,14 +38,19 @@ Runtime kan beschreven worden als de looptijd van een programma. Dit begint bij 
 
 \subsection{\IfLanguageName{dutch}{Graaf}{Graph}}%
 \label{sec:graaf}
-Een graaf kan gezien worden als een groep punten benoemd als knopen en hun onderlinge verbindingen, genaamd bogen. Een verbinding kan ook een pijl bevatten om zijn richting aan te tonen. Op deze manier kunnen de relaties tussen verscheidene knopen in beeld gebracht worden. In het werkstuk van \textcite{Brysbaert2021} wordt dit voorgesteld als een schema waarbij de knopen gebruikers zijn van het sociale media platform facebook en bogen de onderlinge vriendschap voorstellen. De bogen bevatten ook een pijl naar beide richtingen, omdat een vriendschap op het platform een wederzijdse toepassing is. Dit is niet altijd een vereiste. Als we het voorbeeld van youtube gebruiken, kunnen we vaststellen dat het mogelijk is je te aboneren op een kanaal van een persoon. Dit wilt niet zeggen dat deze in kwestie daarom ook geabonneerd is op jouw kanaal. In dat geval zou de pijl dan een enkele richting hebben.
+Een graaf kan gezien worden als een groep punten benoemd als knopen en hun onderlinge verbindingen, genaamd bogen. Een verbinding kan ook een pijl bevatten om zijn richting aan te tonen. Op deze manier kunnen de relaties tussen verscheidene knopen in beeld gebracht worden. In het werkstuk van \textcite{Brysbaert2021} wordt dit voorgesteld als een schema waarbij de knopen gebruikers zijn van het sociale media platform facebook en bogen de onderlinge vriendschap voorstellen. De bogen bevatten ook een pijl naar beide richtingen, omdat een vriendschap op het platform een wederzijdse toepassing is. Dit is niet altijd een vereiste.
+
+Als we het voorbeeld van youtube gebruiken, kunnen we vaststellen dat het mogelijk is je te aboneren op een kanaal van een persoon. Dit wilt niet zeggen dat deze in kwestie daarom ook geabonneerd is op jouw kanaal. In dat geval zou de pijl dan een enkele richting hebben.
+
 De hierboven uitgelegde werking kan men ook toepassen op een bestaande databank. Er zijn verbindingen tussen verschillende soorten data die elk ook hun specieke kenmerken bevatten. Via GraphQL kan men dus hierop inspelen en dichter op de actuele werking van een databank te werk gaan.
+
 (figuur gebruikersFacebook)
 
 \subsection{\IfLanguageName{dutch}{Gebruik}{Usage}}%
 \label{sec:Gebruik}
 Bij de sterke punten van GraphQL hoort toch wel de preventie van over- en underfetching. Overfetching is een probleem die zich vaak voordoet bij eerder traditionele programmas, waarbij er te veel data opgevraagd wordt ten opzichte van wat benodigd is. Gebruikmakend van GraphQL kan men zich toespitsen op juist de data die van toepassing is. Dit zorgt voor een lager verbuik van bandbreedte, dat voordelig is als men ook gebruikt maakt van mobiele aparaten zoals ook facebook doet. Het omgekeerde kan zich echter ook voor doen, bij underfetching wordt niet alle opgevraagde data weergeven in één keer. Dit kan voorgesteld worden als een boodschappenlijstje bij colruyt waarbij er voor elke productbeschrijving een aparte query zou moeten uitgevoerd worden. Dit is ook een probleem waar GraphQL op inspeeld.
 
+Voor ontwikkelaars is het ook handig dat GraphQL declaratief is, op deze manier is de data makkelijker te hanteren en zijn de queries overzichtelijker. Men kan ook gebruik maken van nesting om gerelateerde data op te vragen en om de queries zelf consistent te houden gedurende het hele proces. Via deze werkwijze moeten er dan ook geen responses samengevoegd worden. GraphQL bezit ook schemas die kunnen dienen als een contract om front-end apps te ontwikkelen (dit gebeurd door de API verzoeken te simuleren). Het back-end team kan het contract dan later aanleveren met de nodige diensten. Binnen een graaf moeten de ontwerpers maar over een enkele endpoint beschikken om toegang te hebben tot de achterliggende data.
 
 \subsection{\IfLanguageName{dutch}{API}{API}}%
 \label{sec:API}
