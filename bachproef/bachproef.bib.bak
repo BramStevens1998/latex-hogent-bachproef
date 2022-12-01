@@ -121,4 +121,30 @@ We propose DASX (Data Structure Accelerator), a specialized state machine for da
   year         = {2014},
 }
 
+@Thesis{Willem2021,
+  author      = {Willem, Jan; Hogeschool Gent; Departement IT en Digitale Innovatie; Endare},
+  date        = {2021},
+  institution = {Hogeschool Gent},
+  title       = {API design voor realtime event afhandeling: GraphQL versus REST},
+  type        = {eindwerk},
+  language    = {Nederlands},
+  url         = {https://scriptie.hogent.be/2020-2021/2957_201970574_PBA-TIN_scriptie.pdf},
+  urldate     = {2022-11-01},
+  abstract    = {In deze bachelor proef is er een vergelijkende studie gebeurt rond het afhandelen van realtime events tussen GraphQL en REST.},
+  file        = {:pdfs/API.pdf:PDF},
+  keywords    = {API, realtime, REST, GraphQL},
+}
+
+@Software{Byron2015,
+  author       = {Lee Byron},
+  date         = {2015-09-14},
+  editor       = {Meta},
+  title        = {GraphQL: A data query language},
+  organization = {Meta},
+  type         = {software},
+  url          = {https://engineering.fb.com/2015/09/14/core-data/graphql-a-data-query-language/},
+  urldate      = {2022-12-01},
+  keywords     = {Core Data, DevInfra},
+}
+
 @Comment{jabref-meta: databaseType:biblatex;}
