@@ -147,4 +147,23 @@ We propose DASX (Data Structure Accelerator), a specialized state machine for da
   keywords     = {Core Data, DevInfra},
 }
 
+@Software{GraphQLFoundation2022,
+  author       = {The GraphQL Foundation,},
+  date         = {2022},
+  organization = {The GraphQL Foundation},
+  url          = {https://graphql.org/foundation/},
+  urldate      = {2022-12-01},
+  owner        = {the Linux Foundation},
+}
+
+@Manual{Lievens2021,
+  author     = {Stijn Lievens},
+  date       = {2021-01-27},
+  title      = {Probleemoplossend Denken II},
+  pages      = {240},
+  subtitle   = {Lesnota’s},
+  titleaddon = {Professionele Bachelor in de Toegepaste Informatica},
+  file       = {:pdfs/pod2stijnlieven.pdf:PDF},
+}
+
 @Comment{jabref-meta: databaseType:biblatex;}
