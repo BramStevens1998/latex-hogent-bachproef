@@ -122,7 +122,7 @@ We propose DASX (Data Structure Accelerator), a specialized state machine for da
 }
 
 @Thesis{Willem2021,
-  author      = {Willem, Jan; Hogeschool Gent; Departement IT en Digitale Innovatie; Endare},
+  author      = {Willem, Jan},
   date        = {2021},
   institution = {Hogeschool Gent},
   title       = {API design voor realtime event afhandeling: GraphQL versus REST},
