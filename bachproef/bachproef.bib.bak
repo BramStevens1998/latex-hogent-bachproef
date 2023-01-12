@@ -246,4 +246,13 @@ We propose DASX (Data Structure Accelerator), a specialized state machine for da
   publisher    = {Elsevier {BV}},
 }
 
+@Manual{W3C1999,
+  author     = {W3C},
+  date       = {1999},
+  title      = {XSL Transformations (XSLT)},
+  subtitle   = {Version 1.0},
+  titleaddon = {W3C Recommendation 16 November 1999},
+  url        = {http://new.renderx.com/files/demos/xmlspec/xslt/REC-xslt-19991116.pdf},
+}
+
 @Comment{jabref-meta: databaseType:biblatex;}
