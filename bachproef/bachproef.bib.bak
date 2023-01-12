@@ -199,4 +199,51 @@ We propose DASX (Data Structure Accelerator), a specialized state machine for da
   subtitle  = {A Craftsman's Guide to Software Structure and Design},
 }
 
+@Software{Microsoft2023,
+  author       = {Microsoft},
+  date         = {2023},
+  title        = {Azure-producten},
+  language     = {Nederlands},
+  organization = {Microsoft},
+  type         = {software},
+  url          = {https://azure.microsoft.com/nl-nl/products/},
+  urldate      = {2023-01-12},
+}
+
+@Book{Copeland2015,
+  author    = {Copeland, Marshall and Soh, Julian and Puca, Anthony and Manning, Mike and Gollob, David},
+  date      = {2015-10-08},
+  title     = {Microsoft Azure},
+  isbn      = {978-1-4842-1043-7},
+  pagetotal = {426},
+  publisher = {Springer-Verlag GmbH},
+  url       = {https://www.ebook.de/de/product/25127919/marshall_copeland_julian_soh_anthony_puca_mike_manning_david_gollob_microsoft_azure.html},
+  ean       = {9781484210437},
+  year      = {2015},
+}
+
+@Article{Beimborn2011,
+  author       = {Daniel Beimborn and Thomas Miletzki and Stefan Wenzel},
+  date         = {2011-10},
+  journaltitle = {Business {\&}amp$\mathsemicolon$ Information Systems Engineering},
+  title        = {Platform as a Service ({PaaS})},
+  doi          = {10.1007/s12599-011-0183-3},
+  number       = {6},
+  pages        = {381--384},
+  volume       = {3},
+  publisher    = {Springer Science and Business Media {LLC}},
+}
+
+@Article{Manvi2014,
+  author       = {Sunilkumar S. Manvi and Gopal Krishna Shyam},
+  date         = {2014-05},
+  journaltitle = {Journal of Network and Computer Applications},
+  title        = {Resource management for Infrastructure as a Service ({IaaS}) in cloud computing: A survey},
+  doi          = {10.1016/j.jnca.2013.10.004},
+  pages        = {424--440},
+  url          = {https://doi.org/10.1016/j.jnca.2013.10.004},
+  volume       = {41},
+  publisher    = {Elsevier {BV}},
+}
+
 @Comment{jabref-meta: databaseType:biblatex;}
