@@ -137,7 +137,7 @@
 % If you included tables and/or source code listings, uncomment the appropriate
 % lines.
 %\listoftables
-\listoflistings
+%\listoflistings
 
 % Als je een lijst van afkortingen of termen wil toevoegen, dan hoort die
 % hier thuis. Gebruik bijvoorbeeld de ``glossaries'' package.
@@ -188,7 +188,48 @@ Het onderwerp van deze bachelorproef is gebaseerd op een onderzoeksvoorstel dat 
 % TODO: Voeg hier eventuele andere bijlagen toe. Bv. als je deze BP voor de
 % tweede keer indient, een overzicht van de verbeteringen t.o.v. het origineel.
 %\input{...}
+\chapter{Bijlagen}
+\section{main.template.bicep}
+\label{sec:main.template.bicep}
+\begin{lstlisting}
+    // main.template.bicep
+    //* --- PARAMETERS ---
+    @description('Name of the environment to deploy the resources to')
+    param dIPEnvironment string
+    param dIPCompany string
+    param dIPLocation string = resourceGroup().location
+    param dIPName string
+    param KeyvaultName string
+    param UserAssignedIdentityName string
+    param adminName string
+    param adminPW string
+    param usePE bool
+    param vNet string
+    param privateDnsZoneBlob string
+    param privateDnsZoneQueue string
+    param privateDnsZoneWeb string
 
+    //* --- MODULES ---
+    module dIP_Framework 'Framework/_framework.template.bicep'  = {
+        name: 'dip-framework'
+        params: {
+            dIPEnvironment: dIPEnvironment
+            dIPCompany: dIPCompany
+            dIPLocation: dIPLocation
+            dIPName: dIPName
+            KeyVaultName: KeyvaultName
+            UserAssignedIdentityName: UserAssignedIdentityName
+            adminName: adminName
+            adminPW: adminPW
+            usePE: usePE
+            vNet: vNet
+            privateDnsZoneBlob: privateDnsZoneBlob
+            privateDnsZoneQueue: privateDnsZoneQueue
+            privateDnsZoneWeb: privateDnsZoneWeb
+        }
+    }
+
+\end{lstlisting}
 %%---------- Backmatter, referentielijst ---------------------------------------
 
 \backmatter{}
