@@ -33,6 +33,33 @@ Als voorlaatste deel van dit onderzoek werd er dan gekeken hoe men GraphQL of so
 
 Het onderzoek werd afgesloten met een test van de omgeving en of deze samen kon werken met de Data-Accelerator om zo een extra tool bij het Zwitsers zakmes toe te voegen. Dit wordt vervolgens verwerkt tot een gepaste conclusie binnen deze bachelorproef.
 
+\subsection{\IfLanguageName{dutch}{Documentatie}{Documentatie}}%
+\label{sec:Documentatie}
+
+Voordat er een omgeving opgesteld wordt moet de code eerst beschreven worden van de Data-Accelerator. Dit gebeurd aan de hand van XML beschrijvingen bij elke functie en klasse die de accelerator omvat. Deze bestond uit 53 klassen die elk meerdere functies bevat. Deze zijn terug te vinden in bijlage B.4 Documentatie. Het eerste deel van deze klassen zijn gegroepeerd volgens hun functie namelijk: Activiteiten, Entrypoints en Orchestratie. Het tweede deel werd dan gegroepeerd op basis van hun ondersteuning. Deze zijn: Communitcatie, Conversie, Helpers, Interfaces, IOC, SQL, Storage en XSLT. De XML beschrijvingen bij elke functie of klasse bestonden uit hun samenvatting, gebruikte parameters, wat deze juist inhouden en wat er mogelijks kon geresulteerd worden bij een functie.
+
+\subsection{\IfLanguageName{dutch}{BICEP}{BICEP}}%
+\label{sec:BICEP}
+
+Om de Data-Accelerator te kunnen gebruiken werden in Microsoft Azure binnen een Resource Group de volgende omgevingen aangemaakt die ook zichtbaar zijn in bijlage B.5 Azure:
+
+Een SQL database om de data die gebruikt wordt door de Data-Accelerator bij te houden.
+
+Application Insights om de performantie van de applicatie te monitoren.
+
+Een Managed Identity om de gebruiker van de Resource Group de gepaste rechten toe te wijzen in verband met aanpassingen doorvoeren en de pipeline te kunnen uitvoeren.
+
+Een SQL server om toegang tot de databank te beperken tot geselecteerde IP-adressen.
+
+Een Virtual network om een bedrijfsnetwerk te simuleren, want dit wordt bij klanten voorzien en toegepast.
+
+Het Storage Account waarin alle containers die benodigd zijn aangemaakt worden. Hierin zijn de scripts, queries en XSLT bestanden geplaatst zodat in het geval van een lokaal verlies van de bestanden deze ergens veilig te vinden zijn. Dit bevat alle Azure Storage data objects zoals blobs, schijven, tables en gedeelde bestanden.
+
+Er is ook een Private DNS zone ogezet om bij het gebruik van een Virtual network er ook een DNS zone aan gekoppeld kan worden.
+
+Als laatste is er een Keyvault toegevoegd. Deze bevat aanmeldingsgegevens en andere waarden die versleuteld zijn zodat die dan in de pipeline opgehaald en gebruikt kunnen worden op een veilige manier.
+
+Na het opstellen van deze omgeving manueel, zijn de hierboven benoemde delen omgezet naar ARM templates. Deze zijn op hun beurt omgevormd tot BICEP templates vanwege de hiervoor benoemde problemen die zich kunnen voordoen bij ARM. De templates zijn zodanig opgesteld dat ze automatisch de juiste naamgeving bevatten en samen kunnen werken. Deze zijn zichtbaar in bijlage B.6 BICEP.
 %% TODO: Hoe ben je te werk gegaan? Verdeel je onderzoek in grote fasen, en
 %% licht in elke fase toe welke stappen je gevolgd hebt. Verantwoord waarom je
 %% op deze manier te werk gegaan bent. Je moet kunnen aantonen dat je de best
