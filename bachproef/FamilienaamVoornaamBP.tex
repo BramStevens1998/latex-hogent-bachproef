@@ -189,10 +189,12 @@ Het onderwerp van deze bachelorproef is gebaseerd op een onderzoeksvoorstel dat 
 % tweede keer indient, een overzicht van de verbeteringen t.o.v. het origineel.
 %\input{...}
 \chapter{Bijlagen}
-\section{main.template.bicep}
+
+\section{BICEPs}
+\label{sec:BICEPs}
+\subsection{main.template.bicep}
 \label{sec:main.template.bicep}
 \begin{lstlisting}
-    // main.template.bicep
     //* --- PARAMETERS ---
     @description('Name of the environment to deploy the resources to')
     param dIPEnvironment string
@@ -228,8 +230,1286 @@ Het onderwerp van deze bachelorproef is gebaseerd op een onderzoeksvoorstel dat 
             privateDnsZoneWeb: privateDnsZoneWeb
         }
     }
+\end{lstlisting}
+
+\subsection{main.dev.parameters.json}
+\label{sec:main.dev.parameters.json}
+\begin{lstlisting}
+ {
+     "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+     "contentVersion": "1.0.0.0",
+     "parameters": {
+         "dIPEnvironment": {
+             "value": "dev"
+         },
+         "dIPName": {
+             "value": "da"
+         },
+         "dIPCompany": {
+             "value": "bs"
+         },
+         "dIPLocation": {
+             "value": "West Europe"
+         },
+         "KeyvaultName": {
+             "value": "trac-kv-bramstevens"
+         },
+         "UserAssignedIdentityName": {
+             "value": "bs-da-dev-id"
+         },
+         "adminName": {
+             "value": "BramStevens"
+         },
+         "adminPW": {
+             "value": "QkeJosm5a?"
+         },
+         "usePE": {
+             "value": false
+         },
+         "vNet": {
+             "value": "/subscriptions/71e33943-63fc-4631-85c7-ed164c40c1cd/resourceGroups/rg-Sandbox-BramStevens/providers/Microsoft.Network/virtualNetworks/bs-da-dev-VNet"
+         },
+         "privateDnsZoneWeb": {
+             "value": "/subscriptions/71e33943-63fc-4631-85c7-ed164c40c1cd/resourcegroups/rg-Sandbox-BramStevens/providers/Microsoft.Network/privateDnsZones/dnsZone.stevensbram"
+         },
+         "privateDnsZoneBlob": {
+             "value": "/subscriptions/71e33943-63fc-4631-85c7-ed164c40c1cd/resourcegroups/rg-Sandbox-BramStevens/providers/Microsoft.Network/privateDnsZones/dnsZone.stevensbram"
+         },
+         "privateDnsZoneQueue": {
+             "value": "/subscriptions/71e33943-63fc-4631-85c7-ed164c40c1cd/resourcegroups/rg-Sandbox-BramStevens/providers/Microsoft.Network/privateDnsZones/dnsZone.stevensbram"
+         }
+     }
+ }
+\end{lstlisting}
+
+\subsection{storage.template.bicep}
+\label{sec:storage.template.bicep}
+\begin{lstlisting}
+    //* --- PARAMETERS ---
+    param dIPEnvironment string
+    param dIPCompany string
+    param dIPLocation string
+    param dIPName string
+    param kvName string
+    param managedIdentityObjectId string
+    param usePE bool
+    param vNet string
+    param privateDnsZoneBlob string
+    param privateDnsZoneQueue string
+
+    //* --- EXISTING RESOURCES ---
+    resource KeyVault 'Microsoft.KeyVault/vaults@2021-06-01-preview' existing = {
+        name: kvName
+    }
+
+    //* --- RESOURCES ---
+    resource storageaccount 'Microsoft.Storage/storageAccounts@2021-04-01' = {
+        name: '${dIPCompany}${dIPName}01${dIPEnvironment}store'
+        location: dIPLocation
+        kind: 'StorageV2'
+        sku: {
+            name: 'Standard_LRS'
+            tier: 'Standard'
+        }
+        properties: {
+            networkAcls: {
+                bypass: 'AzureServices'
+                virtualNetworkRules: []
+                ipRules: []
+                defaultAction: 'Allow'
+            }
+            supportsHttpsTrafficOnly: true
+            encryption: {
+                services: {
+                    file: {
+                        enabled: true
+                    }
+                    blob: {
+                        enabled: true
+                    }
+                }
+                keySource: 'Microsoft.Storage'
+            }
+            accessTier: 'Hot'
+        }
+    }
+    resource storageaccountPrivateEndpointBlob 'Microsoft.Network/privateEndpoints@2021-05-01' = if(usePE) {
+        name: '${dIPCompany}${dIPName}01${dIPEnvironment}store-blob-pe'
+        location: dIPLocation
+        properties: {
+            privateLinkServiceConnections: [
+            {
+                name: '${dIPCompany}${dIPName}01${dIPEnvironment}store-blob-pe-sc'
+                properties: {
+                    privateLinkServiceId: storageaccount.id
+                    privateLinkServiceConnectionState: {
+                        status: 'Approved'
+                        actionsRequired: 'None'
+                    }
+                    groupIds: [
+                    'blob'
+                    ]
+                }
+            }
+            ]
+            manualPrivateLinkServiceConnections: []
+            subnet: {
+                id: '${vNet}/subnets/${dIPCompany}-${dIPName}-${dIPEnvironment}-subnet'
+            }
+            customDnsConfigs: []
+        }
+        resource privateDnsZoneGroups 'privateDnsZoneGroups@2021-05-01' = {
+            name: 'default'
+            properties: {
+                privateDnsZoneConfigs: [
+                {
+                    name: 'privatelink_azurewebsites_net'
+                    properties: {
+                        privateDnsZoneId: privateDnsZoneBlob
+                    }
+                }
+                ]
+            }
+        }
+    }
+
+    resource storageaccountPrivateEndpointTable 'Microsoft.Network/privateEndpoints@2021-05-01' = if(usePE) {
+        name: '${dIPCompany}${dIPName}01${dIPEnvironment}store-table-pe'
+        location: dIPLocation
+        properties: {
+            privateLinkServiceConnections: [
+            {
+                name: '${dIPCompany}${dIPName}01${dIPEnvironment}store-table-pe-sc'
+                properties: {
+                    privateLinkServiceId: storageaccount.id
+                    privateLinkServiceConnectionState: {
+                        status: 'Approved'
+                        actionsRequired: 'None'
+                    }
+                    groupIds: [
+                    'table'
+                    ]
+                }
+            }
+            ]
+            manualPrivateLinkServiceConnections: []
+            subnet: {
+                id: '${vNet}/subnets/${dIPCompany}-${dIPName}-${dIPEnvironment}-subnet'
+            }
+            customDnsConfigs: []
+        }
+        resource privateDnsZoneGroups 'privateDnsZoneGroups@2021-05-01' = {
+            name: 'default'
+            properties: {
+                privateDnsZoneConfigs: [
+                {
+                    name: 'privatelink_azurewebsites_net'
+                    properties: {
+                        privateDnsZoneId: privateDnsZoneQueue
+                    }
+                }
+                ]
+            }
+        }
+    }
+
+    resource storageaccountPrivateEndpointQueue 'Microsoft.Network/privateEndpoints@2021-05-01' = if(usePE) {
+        name: '${dIPCompany}${dIPName}01${dIPEnvironment}store-queue-pe'
+        location: dIPLocation
+        properties: {
+            privateLinkServiceConnections: [
+            {
+                name: '${dIPCompany}${dIPName}01${dIPEnvironment}store-queue-pe-sc'
+                properties: {
+                    privateLinkServiceId: storageaccount.id
+                    privateLinkServiceConnectionState: {
+                        status: 'Approved'
+                        actionsRequired: 'None'
+                    }
+                    groupIds: [
+                    'queue'
+                    ]
+                }
+            }
+            ]
+            manualPrivateLinkServiceConnections: []
+            subnet: {
+                id: '${vNet}/subnets/${dIPCompany}-${dIPName}-${dIPEnvironment}-subnet'
+            }
+            customDnsConfigs: []
+        }
+        resource privateDnsZoneGroups 'privateDnsZoneGroups@2021-05-01' = {
+            name: 'default'
+            properties: {
+                privateDnsZoneConfigs: [
+                {
+                    name: 'privatelink_azurewebsites_net'
+                    properties: {
+                        privateDnsZoneId: privateDnsZoneQueue
+                    }
+                }
+                ]
+            }
+        }
+    }
+
+    resource roleAuthorization 'Microsoft.Authorization/roleAssignments@2020-10-01-preview' = {
+        name: guid(storageaccount.id, resourceGroup().id, managedIdentityObjectId)
+        scope: storageaccount
+        properties: {
+            principalId: managedIdentityObjectId
+            roleDefinitionId: '/providers/Microsoft.Authorization/roleDefinitions/b24988ac-6180-42a0-ab88-20f7382dd24c' // Contributor
+        }
+    }
+
+    resource blobRoleAuthorization 'Microsoft.Authorization/roleAssignments@2020-10-01-preview' = {
+        name: guid(storageaccount.id, resourceGroup().id, managedIdentityObjectId, 'blob')
+        scope: storageaccount
+        properties: {
+            principalId: managedIdentityObjectId
+            roleDefinitionId: '/providers/Microsoft.Authorization/roleDefinitions/ba92f5b4-2d11-453d-a403-e96b0029c9fe' // Blob Contributor
+        }
+    }
+
+    resource tableRoleAuthorization 'Microsoft.Authorization/roleAssignments@2020-10-01-preview' = {
+        name: guid(storageaccount.id, resourceGroup().id, managedIdentityObjectId, 'table')
+        scope: storageaccount
+        properties: {
+            principalId: managedIdentityObjectId
+            roleDefinitionId: '/providers/Microsoft.Authorization/roleDefinitions/0a9a7e1f-b9d0-4cc4-a60d-0319b160aaa3' // Table Contributor
+        }
+    }
+
+    resource blobservice 'Microsoft.Storage/storageAccounts/blobServices@2021-04-01' = {
+        name: '${storageaccount.name}/default'
+        properties: {
+            cors: {
+                corsRules: []
+            }
+            deleteRetentionPolicy: {
+                enabled: false
+            }
+        }
+    }
+
+    resource querycontainer 'Microsoft.Storage/storageAccounts/blobServices/containers@2021-04-01' = {
+        name: '${storageaccount.name}/default/data-accelerator-queries'
+        properties: {
+            publicAccess: 'None'
+        }
+    }
+
+    resource storedprocedurecontainer 'Microsoft.Storage/storageAccounts/blobServices/containers@2021-04-01' = {
+        name: '${storageaccount.name}/default/data-accelerator-stored-procedures'
+        properties: {
+            publicAccess: 'None'
+        }
+    }
+
+    resource mappingcontainer 'Microsoft.Storage/storageAccounts/blobServices/containers@2021-04-01' = {
+        name: '${storageaccount.name}/default/data-accelerator-mappings'
+        properties: {
+            publicAccess: 'None'
+        }
+    }
+
+    resource scriptcontainer 'Microsoft.Storage/storageAccounts/blobServices/containers@2021-04-01' ={
+        name: '${storageaccount.name}/default/data-accelerator-scripts'
+        properties: {
+            publicAccess: 'None'
+        }
+    }
+
+    //* --- SECRETS ---
+    resource storageAccountConnectionStringSecret 'Microsoft.KeyVault/vaults/secrets@2019-09-01' = {
+        name: 'storageAccountConnectionString-${dIPEnvironment}'
+        parent: KeyVault
+        properties: {
+            value: 'DefaultEndpointsProtocol=https;AccountName=${storageaccount.name};EndpointSuffix=${environment().suffixes.storage};AccountKey=${listKeys(storageaccount.id, storageaccount.apiVersion).keys[0].value}'
+        }
+    }
+
+    resource storageAccountKeySecret 'Microsoft.KeyVault/vaults/secrets@2019-09-01' = {
+        name: 'storageAccountKey-${dIPEnvironment}'
+        parent: KeyVault
+        properties: {
+            value: '${listKeys(storageaccount.id, storageaccount.apiVersion).keys[0].value}'
+        }
+    }
+
+    //* --- OUTPUTS ---
+    output storageAccountName string = storageaccount.name
+    output storageAccountConnectionStringSecretName string = storageAccountConnectionStringSecret.name
+    output storageAccountKeySecretName string = storageAccountKeySecret.name
+\end{lstlisting}
+
+\subsection{functionapp.template.settings.bicep}
+\label{sec:functionapp.template.settings.bicep}
+\begin{lstlisting}
+    param applicationInsightsInstrumentationKey string
+    param storageAccountName string
+    param functionAppName string
+    param functionAppStagingSlotName string
+
+    param appConfiguration_appConfigLabel_value_production string = 'production'
+    param appConfiguration_appConfigLabel_value_staging string = 'staging'
+
+    var BASE_SLOT_APPSETTINGS = {
+        APPINSIGHTS_INSTRUMENTATIONKEY: applicationInsightsInstrumentationKey
+        APPLICATIONINSIGHTS_CONNECTION_STRING: 'Instrumentationkey=${applicationInsightsInstrumentationKey}'
+        AzureWebJobsStorage: 'DefaultEndpointsProtocol=https;AccountName=${storageAccountName}'
+        FUNCTIONS_EXTENSION_VERSION: '~4'
+        FUNCTIONS_WORKER_RUNTIME: 'node'
+        WEBSITE_CONTENTSHARE: toLower(storageAccountName)
+        WEBSITE_CONTENTAZUREFILECONNECTIONSTRING: 'DefaultEndpointsProtocol=https;AccountName=rgsandboxbramstevena87a;AccountKey=Wn1HQ+3gpYR5eyPtxQdVpEqVg2duQvDDLcVadTOLEkVLWUUoQy44iTbebq/qBGyenjfS81DMXx7P+AStO6petA==;EndpointSuffix=core.windows.net'
+    }
+    var PROD_SLOT_APPSETTINGS ={
+        APP_CONFIGURATION_LABEL: appConfiguration_appConfigLabel_value_production
+    }
+
+    resource functionapp_web 'Microsoft.Web/sites/config@2022-03-01' = {
+        name: '${functionAppName}/appsettings'
+        properties: union(BASE_SLOT_APPSETTINGS, PROD_SLOT_APPSETTINGS)
+    }
+
+    var STAGING_SLOT_APPSETTINGS ={
+        APP_CONFIGURATION_LABEL: appConfiguration_appConfigLabel_value_staging
+    }
+
+    resource functionapp_stagingslot_web 'Microsoft.Web/sites/slots/config@2022-03-01' = {
+        name: '${functionAppStagingSlotName}/appsettings'
+        properties: union(BASE_SLOT_APPSETTINGS, STAGING_SLOT_APPSETTINGS)
+    }
+\end{lstlisting}
+
+\subsection{functionapp.template.bicep}
+\label{sec:functionapp.template.bicep}
+\begin{lstlisting}
+    //* --- PARAMETERS ---
+    param dIPLocation string
+    param dIPCompany string
+    param dIPName string
+    param dIPEnvironment string
+    @secure()
+    param appInsightsKey string
+    param storageAccountName string
+    param usePE bool
+    param vNet string
+    param privateDnsZone string
+
+    resource hostingPlan 'Microsoft.Web/serverfarms@2020-10-01' = {
+        name: '${dIPCompany}-${dIPName}-${dIPEnvironment}-app'
+        location: dIPLocation
+        sku: {
+            name: 'Y1'
+            tier: 'Dynamic'
+        }
+        properties: {}
+    }
+
+
+    resource functionapp_resource 'Microsoft.Web/sites@2022-03-01' = {
+        name: '${dIPCompany}-${dIPName}-${dIPEnvironment}-functionapp'
+        location: dIPLocation
+        kind: 'functionapp'
+        identity: {
+            type: 'SystemAssigned'
+        }
+        properties: {
+            httpsOnly: true
+            serverFarmId: hostingPlan.id
+            clientAffinityEnabled: true
+            reserved: true
+            siteConfig: {
+            }
+        }
+    }
+
+    resource functionSlotStaging 'Microsoft.Web/sites/slots@2022-03-01' = {
+        name: '${functionapp_resource.name}/staging'
+        location: dIPLocation
+        identity: {
+            type: 'SystemAssigned'
+        }
+        properties: {
+            enabled: true
+            httpsOnly: true
+        }
+    }
+
+    resource functionapp_web 'Microsoft.Web/sites/config@2022-03-01' = {
+        parent: functionapp_resource
+        name: 'slotConfigNames'
+        properties: {
+            appSettingNames: [
+            'APP_CONFIGURATION_LABEL'
+            ]
+        }
+    }
+
+    module appService_appSettings 'functionapp.template.settings.bicep' = {
+        name: '${dIPCompany}-${dIPName}-${dIPEnvironment}-appConfig'
+        params: {
+            applicationInsightsInstrumentationKey: appInsightsKey
+            storageAccountName: storageAccountName
+            functionAppName: functionapp_resource.name
+            functionAppStagingSlotName: functionSlotStaging.name
+        }
+    }
+
+    resource functionAppPrivateEndpoint 'Microsoft.Network/privateEndpoints@2021-05-01' = if(usePE) {
+        name: '${dIPCompany}-${dIPName}-da-${dIPEnvironment}-func-pe'
+        location: dIPLocation
+        properties: {
+            privateLinkServiceConnections: [
+            {
+                name: '${dIPCompany}-${dIPName}-da-${dIPEnvironment}-func-pe-sc'
+                properties: {
+                    privateLinkServiceId: functionapp_resource.id
+                    privateLinkServiceConnectionState: {
+                        status: 'Approved'
+                        actionsRequired: 'None'
+                    }
+                    groupIds: [
+                    'sites'
+                    ]
+                }
+            }
+            ]
+            manualPrivateLinkServiceConnections: []
+            subnet: {
+                id: '${vNet}/subnets/${dIPCompany}-${dIPName}-${dIPEnvironment}-subnet'
+            }
+            customDnsConfigs: []
+        }
+        resource privateDnsZoneGroups 'privateDnsZoneGroups@2021-05-01' = {
+            name: 'default'
+            properties: {
+                privateDnsZoneConfigs: [
+                {
+                    name: 'privatelink_azurewebsites_net'
+                    properties: {
+                        privateDnsZoneId: privateDnsZone
+                    }
+                }
+                ]
+            }
+        }
+    }
+
+    output functionAppName string = functionapp_resource.name
+    output functionAppSlotName string = functionSlotStaging.name
+\end{lstlisting}
+
+\subsection{database.template.bicep}
+\label{sec:database.template.bicep}
+\begin{lstlisting}
+
+    //* --- PARAMETERS ---
+    param dIPLocation string
+    param dIPCompany string
+    param dIPName string
+    param dIPEnvironment string
+    param adminName string
+    param adminPW string
+    param usePE bool
+    param vNet string
+    param privateDnsZone string
+
+    resource sql_datahub 'Microsoft.Sql/servers@2022-02-01-preview' = {
+        name: '${dIPCompany}-${dIPName}-${dIPEnvironment}-SQLServer'
+        location: dIPLocation
+        kind: 'v12.0'
+        properties: {
+            administratorLogin: adminName
+            administratorLoginPassword: adminPW
+            version: '12.0'
+            minimalTlsVersion: '1.2'
+            publicNetworkAccess: 'Enabled'
+            restrictOutboundNetworkAccess: 'Disabled'
+        }
+    }
+
+    resource sqldb_datahub 'Microsoft.Sql/servers/databases@2022-02-01-preview' = {
+        parent: sql_datahub
+        name: '${dIPCompany}-${dIPName}-${dIPEnvironment}-database'
+        location: dIPLocation
+        sku: {
+            name: 'GP_S_Gen5'
+            tier: 'GeneralPurpose'
+            family: 'Gen5'
+            capacity: 1
+        }
+        kind: 'v12.0,user,vcore,serverless'
+        properties: {
+            collation: 'SQL_Latin1_General_CP1_CI_AS'
+            maxSizeBytes: 34359738368
+            catalogCollation: 'SQL_Latin1_General_CP1_CI_AS'
+            zoneRedundant: false
+            readScale: 'Disabled'
+            autoPauseDelay: 60
+            requestedBackupStorageRedundancy: 'Local'
+            minCapacity: '0.5'
+            maintenanceConfigurationId: '/subscriptions/71e33943-63fc-4631-85c7-ed164c40c1cd/providers/Microsoft.Maintenance/publicMaintenanceConfigurations/SQL_Default'
+            isLedgerOn: false
+        }
+    }
+
+    resource sql_datahub_firewall_azure 'Microsoft.Sql/servers/firewallRules@2022-02-01-preview' = {
+        parent: sql_datahub
+        name: 'AllowAllWindowsAzureIps'
+        properties: {
+            startIpAddress: '0.0.0.0'
+            endIpAddress: '0.0.0.0'
+        }
+    }
+
+    resource dataAcceleratorPrivateEndpoint 'Microsoft.Network/privateEndpoints@2021-05-01' = if(usePE) {
+        name: '${dIPCompany}-${dIPName}-da-${dIPEnvironment}-func-pe'
+        location: dIPLocation
+        properties: {
+            privateLinkServiceConnections: [
+            {
+                name: '${dIPCompany}-${dIPName}-da-${dIPEnvironment}-func-pe-sc'
+                properties: {
+                    privateLinkServiceId: sql_datahub.id
+                    privateLinkServiceConnectionState: {
+                        status: 'Approved'
+                        actionsRequired: 'None'
+                    }
+                    groupIds: [
+                    'sqlServer'
+                    ]
+                }
+            }
+            ]
+            manualPrivateLinkServiceConnections: []
+            subnet: {
+                id: '${vNet}/subnets/${dIPCompany}-${dIPName}-${dIPEnvironment}-subnet'
+            }
+            customDnsConfigs: []
+        }
+        resource privateDnsZoneGroups 'privateDnsZoneGroups@2021-05-01' = {
+            name: 'default'
+            properties: {
+                privateDnsZoneConfigs: [
+                {
+                    name: 'privatelink_azurewebsites_net'
+                    properties: {
+                        privateDnsZoneId: privateDnsZone
+                    }
+                }
+                ]
+            }
+        }
+    }
+\end{lstlisting}
+
+\subsection{dataaccelerator.function.template.bicep}
+\label{sec:dataaccelerator.function.template.bicep}
+\begin{lstlisting}
+    param dIPEnvironment string
+    param dIPCompany string
+    param dIPLocation string
+    param dIPName string
+    @secure()
+    param odsConnectionString string
+    param serverFarmId string
+    @secure()
+    param storageAccountConnectionString string
+    @secure()
+    param appInsightsInstrumentationKey string
+    param vNet string
+    param faSubnet string
+    param managedIdentityId string
+    param privateDnsZone string
+
+    resource dataAccelerator 'Microsoft.Web/sites@2021-02-01' = {
+        name: '${dIPCompany}-${dIPName}-dataaccelerator-${dIPEnvironment}-func'
+        location: dIPLocation
+        kind: 'functionapp'
+        identity: {
+            type: 'UserAssigned'
+            userAssignedIdentities: {
+                '${managedIdentityId}': {}
+            }
+        }
+        properties: {
+            serverFarmId: serverFarmId
+            hostNameSslStates: [
+            {
+                name: '${dIPCompany}-${dIPName}-dataaccelerator-${dIPEnvironment}-func.azurewebsites.net'
+                sslState: 'Disabled'
+                hostType: 'Standard'
+            }
+            {
+                name: '${dIPCompany}-${dIPName}-dataaccelerator-${dIPEnvironment}-func.scm.azurewebsites.net'
+                sslState: 'Disabled'
+                hostType: 'Repository'
+            }
+            ]
+            reserved: false
+            isXenon: false
+            hyperV: false
+            siteConfig: {
+                numberOfWorkers: 1
+                acrUseManagedIdentityCreds: false
+                alwaysOn: false
+                http20Enabled: true
+                minTlsVersion: '1.2'
+                functionAppScaleLimit: 200
+                minimumElasticInstanceCount: 1
+            }
+            containerSize: 1536
+            dailyMemoryTimeQuota: 0
+            scmSiteAlsoStopped: false
+            clientAffinityEnabled: false
+            clientCertEnabled: false
+            clientCertMode: 'Required'
+            hostNamesDisabled: false
+            httpsOnly: true
+            redundancyMode: 'None'
+            storageAccountRequired: false
+            virtualNetworkSubnetId: '${vNet}/subnets/${faSubnet}'
+        }
+        resource config 'config' = {
+            name: 'web'
+            properties: {
+                numberOfWorkers: 1
+                netFrameworkVersion: 'v4.0'
+                use32BitWorkerProcess: false
+                scmType: 'None'
+                http20Enabled: true
+                minTlsVersion: '1.2'
+                preWarmedInstanceCount: 1
+                minimumElasticInstanceCount: 1
+                appSettings: [
+                {
+                    name: 'FUNCTIONS_EXTENSION_VERSION'
+                    value: '~3'
+                }
+                {
+                    name: 'FUNCTIONS_WORKER_RUNTIME'
+                    value: 'dotnet'
+                }
+                {
+                    name: 'TaskHubName'
+                    value: 'dataacceleratortaskhub'
+                }
+                {
+                    name: 'AzureWebJobsStorage'
+                    value: storageAccountConnectionString
+                }
+                {
+                    name: 'WEBSITE_CONTENTAZUREFILECONNECTIONSTRING'
+                    value: storageAccountConnectionString
+                }
+                {
+                    name: 'WEBSITE_CONTENTSHARE'
+                    value: '${dIPCompany}-${dIPName}-dataaccelerator-${dIPEnvironment}-func'
+                }
+                {
+                    name: 'APPINSIGHTS_INSTRUMENTATIONKEY'
+                    value: appInsightsInstrumentationKey
+                }
+                {
+                    name: 'APPLICATIONINSIGHTS_CONNECTION_STRING'
+                    value: 'InstrumentationKey=${appInsightsInstrumentationKey}'
+                }
+                {
+                    name: 'IOCContainer:Type'
+                    value: 'Blob'
+                }
+                {
+                    name: 'IOCContainer:SQLEnvironments:Default:Name'
+                    value: 'Default'
+                }
+                {
+                    name: 'IOCContainer:SQLEnvironments:Default:ConnectionString'
+                    value: odsConnectionString
+                }
+                {
+                    name: 'IOCContainer:StorageEnvironments:Default:Name'
+                    value: 'Default'
+                }
+                {
+                    name: 'IOCContainer:StorageEnvironments:Default:ConnectionString'
+                    value: storageAccountConnectionString
+                }
+                {
+                    name: 'IOCContainer:StorageEnvironments:Default:QueryContainer'
+                    value: 'data-accelerator-queries'
+                }
+                {
+                    name: 'IOCContainer:StorageEnvironments:Default:StoredProcedureContainer'
+                    value: 'data-accelerator-stored-procedures'
+                }
+                {
+                    name: 'IOCContainer:StorageEnvironments:Default:MappingContainer'
+                    value: 'data-accelerator-mappings'
+                }
+                ]
+            }
+        }
+        resource slotConfig 'config' = {
+            name: 'slotConfigNames'
+            properties: {
+                appSettingNames: [
+                'APPINSIGHTS_INSTRUMENTATIONKEY'
+                'TaskHubName'
+                ]
+            }
+        }
+        resource staging 'slots' = {
+            name: 'stg'
+            location: dIPLocation
+            identity: {
+                type: 'SystemAssigned'
+            }
+            properties: {
+                serverFarmId: serverFarmId
+                reserved: false
+                clientAffinityEnabled: false
+                clientCertEnabled: false
+                hostNamesDisabled: false
+                httpsOnly: true
+            }
+            resource config 'config' = {
+                name: 'web'
+                properties: {
+                    appSettings: [
+                    {
+                        name: 'FUNCTIONS_EXTENSION_VERSION'
+                        value: '~3'
+                    }
+                    {
+                        name: 'FUNCTIONS_WORKER_RUNTIME'
+                        value: 'dotnet'
+                    }
+                    {
+                        name: 'TaskHubName'
+                        value: 'dataacceleratorstgtaskhub'
+                    }
+                    {
+                        name: 'WEBSITE_CONTENTAZUREFILECONNECTIONSTRING'
+                        value: storageAccountConnectionString
+                    }
+                    {
+                        name: 'AzureWebJobsStorage'
+                        value: storageAccountConnectionString
+                    }
+                    {
+                        name: 'WEBSITE_CONTENTSHARE'
+                        value: '${dIPCompany}-${dIPName}-dataaccelerator-${dIPEnvironment}-func'
+                    }
+                    {
+                        name: 'IOCContainer:Type'
+                        value: 'Blob'
+                    }
+                    {
+                        name: 'IOCContainer:SQLEnvironments:Default:Name'
+                        value: 'Default'
+                    }
+                    {
+                        name: 'IOCContainer:SQLEnvironments:Default:ConnectionString'
+                        value: odsConnectionString
+                    }
+                    {
+                        name: 'IOCContainer:StorageEnvironments:Default:Name'
+                        value: 'Default'
+                    }
+                    {
+                        name: 'IOCContainer:StorageEnvironments:Default:ConnectionString'
+                        value: storageAccountConnectionString
+                    }
+                    {
+                        name: 'IOCContainer:StorageEnvironments:Default:QueryContainer'
+                        value: 'data-accelerator-queries'
+                    }
+                    {
+                        name: 'IOCContainer:StorageEnvironments:Default:StoredProcedureContainer'
+                        value: 'data-accelerator-stored-procedures'
+                    }
+                    {
+                        name: 'IOCContainer:StorageEnvironments:Default:MappingContainer'
+                        value: 'data-accelerator-mappings'
+                    }
+                    ]
+                }
+            }
+        }
+        resource vNetConnection 'virtualNetworkConnections@2021-03-01' = {
+            name: 'vnetconnection'
+            properties: {
+                vnetResourceId: '${vNet}/subnets/${faSubnet}'
+                isSwift: true
+            }
+        }
+    }
+    resource dataAcceleratorPrivateEndpoint 'Microsoft.Network/privateEndpoints@2021-05-01' = {
+        name: '${dIPCompany}-${dIPName}-dataaccelerator-${dIPEnvironment}-func-pe'
+        location: dIPLocation
+        properties: {
+            privateLinkServiceConnections: [
+            {
+                name: '${dIPCompany}-${dIPName}-dataaccelerator-${dIPEnvironment}-func-pe-sc'
+                properties: {
+                    privateLinkServiceId: dataAccelerator.id
+                    privateLinkServiceConnectionState: {
+                        status: 'Approved'
+                        actionsRequired: 'None'
+                    }
+                    groupIds: [
+                    'sites'
+                    ]
+                }
+            }
+            ]
+            manualPrivateLinkServiceConnections: []
+            subnet: {
+                id: '${vNet}/subnets/${dIPCompany}-${dIPName}-${dIPEnvironment}-subnet'
+            }
+            customDnsConfigs: []
+        }
+        resource privateDnsZoneGroups 'privateDnsZoneGroups@2021-05-01' = {
+            name: 'default'
+            properties: {
+                privateDnsZoneConfigs: [
+                {
+                    name: 'privatelink_azurewebsites_net'
+                    properties: {
+                        privateDnsZoneId: privateDnsZone
+                    }
+                }
+                ]
+            }
+        }
+    }
 
 \end{lstlisting}
+
+\subsection{application.insight.template.bicep}
+\label{sec:application.insight.template.bicep}
+\begin{lstlisting}
+    //* --- PARAMETERS ---
+    param dIPEnvironment string
+    param dIPCompany string
+    param dIPLocation string
+    param dIPName string
+    param kvName string
+
+    //* --- EXISTING RESOURCES ---
+    resource AIKeyVault 'Microsoft.KeyVault/vaults@2021-06-01-preview' existing = {
+        name: kvName
+    }
+
+    //* --- RESOURCES ---
+    resource applicationinsight 'Microsoft.Insights/components@2020-02-02' = {
+        name: '${dIPCompany}-${dIPName}-${dIPEnvironment}-ia'
+        location: dIPLocation
+        kind: 'web'
+        properties: {
+            Application_Type: 'web'
+            Flow_Type: 'Bluefield'
+            IngestionMode: 'ApplicationInsights'
+            publicNetworkAccessForIngestion: 'Enabled'
+            publicNetworkAccessForQuery: 'Enabled'
+            Request_Source: 'AppServiceEnablementCreate'
+            RetentionInDays: 30
+        }
+    }
+
+    //* --- SECRETS ---
+    resource AppInsightsKeySecret 'Microsoft.KeyVault/vaults/secrets@2019-09-01' = {
+        name: 'ai-key-${dIPEnvironment}'
+        parent: AIKeyVault
+        properties: {
+            value: reference(applicationinsight.id, '2014-04-01').InstrumentationKey
+        }
+    }
+
+    //* --- OUTPUTS ---
+    output appInsightsKeySecret string = AppInsightsKeySecret.name
+    output appInsightsKey string = reference(applicationinsight.id, '2014-04-01').InstrumentationKey
+
+\end{lstlisting}
+
+\subsection{framework.template.bicep}
+\label{sec:framework.template.bicep}
+\begin{lstlisting}
+    //* --- PARAMETERS ---
+    param dIPEnvironment string
+    param dIPCompany string
+    param dIPLocation string
+    param dIPName string
+    param KeyVaultName string
+    param UserAssignedIdentityName string
+    param adminPW string
+    param adminName string
+    param usePE bool
+    param vNet string
+    param privateDnsZoneWeb string
+    param privateDnsZoneBlob string
+    param privateDnsZoneQueue string
+
+    //* --- EXISTING RESOURCES ---
+    resource keyvault 'Microsoft.KeyVault/vaults@2021-06-01-preview' existing = {
+        name: KeyVaultName
+    }
+
+    resource managedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2022-01-31-preview' existing = {
+        name: UserAssignedIdentityName
+    }
+
+    //* --- MODULES ---
+    module dIP_Framework_StorageAccount 'storage.template.bicep' = {
+        name: 'dIP-Framework-StorageAccount'
+        params: {
+            dIPEnvironment: dIPEnvironment
+            dIPCompany: dIPCompany
+            dIPLocation: dIPLocation
+            dIPName: dIPName
+            kvName: keyvault.name
+            managedIdentityObjectId: managedIdentity.properties.principalId
+            usePE: usePE
+            vNet: vNet
+            privateDnsZoneBlob: privateDnsZoneBlob
+            privateDnsZoneQueue: privateDnsZoneQueue
+        }
+    }
+
+    module dIP_Framework_Application_Insight 'application_insight.template.bicep' = {
+        name: 'dIP-Framework-Application-Insight'
+        params: {
+            dIPEnvironment: dIPEnvironment
+            dIPCompany: dIPCompany
+            dIPLocation: dIPLocation
+            dIPName: dIPName
+            kvName: keyvault.name
+        }
+    }
+
+    module dIP_Framework_Database 'database.template.bicep' = {
+        name: 'dIP-Framework-Database'
+        params: {
+            dIPLocation: dIPLocation
+            dIPCompany: dIPCompany
+            dIPName: dIPName
+            adminName: adminName
+            adminPW: adminPW
+            dIPEnvironment: dIPEnvironment
+            usePE: usePE
+            vNet: vNet
+            privateDnsZone: privateDnsZoneWeb
+        }
+    }
+
+    module dIP_Framework_Function_App 'functionapp.template.bicep' = {
+        name: 'dIP-Framework-Function-App'
+        params: {
+            dIPLocation: dIPLocation
+            dIPCompany: dIPCompany
+            dIPName: dIPName
+            dIPEnvironment: dIPEnvironment
+            appInsightsKey: dIP_Framework_Application_Insight.outputs.appInsightsKey
+            storageAccountName: dIP_Framework_StorageAccount.outputs.storageAccountName
+            usePE: usePE
+            vNet: vNet
+            privateDnsZone: privateDnsZoneWeb
+        }
+    }
+\end{lstlisting}
+
+\section{YAML}
+\label{sec:YAML}
+\subsection{dataaccelerator.biceps.dev.parameters.yml}
+\label{sec:dataaccelerator.biceps.dev.parameters.yml}
+\begin{lstlisting}
+    # variables to be used in the dataaccelerator_biceps_dev.yml
+
+    variables:
+    # DB parameters to be customised
+    userID: 'BramStevens'
+    keyvaultName: 'trac-kv-bramstevens'
+    # global parameters to be customised
+    serviceConnection: 'DLW CS&P'
+    location: 'West Europe'
+    environment: 'dev'
+    dIPCompany: 'bs'
+    dIPName: 'da'
+    devopsEnvironment: 'AIS-DEV'
+    azureSubscription: 'MS Integration'
+    mailadres: 'bram.stevens@delaware.pro'
+    # VNET parameters to be customised
+    vnetName: 'VNet'
+    vnetAddressPrefix: '151.248.0.0/16'
+    subnetName: 'subnet'
+    subnetAddressPrefix: '151.248.52.0/24'
+    PDNSname: 'dnsZone.stevensbram'
+    #not to be changed
+    PWSFile: '/dlwr.dip.dataaccelerator/Infra/Bicep/Scripts/Messierdata.ps1'
+    parametersPath: '/dlwr.dip.dataaccelerator/Infra/Bicep/Templates/main_dev.parameters.json'
+    templatePath: '/dlwr.dip.dataaccelerator/Infra/Bicep/Templates/main.template.bicep'
+
+\end{lstlisting}
+
+\subsection{dataaccelerator.biceps.dev.yml}
+\label{sec:dataaccelerator.biceps.dev.yml}
+\begin{lstlisting}
+    trigger: none
+
+    name: $(Date:yyyyMMdd)-$(Rev:r)
+
+    parameters:
+    - name: setModeComplete
+    displayName: 'Provision using mode = Complete'
+    type: boolean
+    default: false
+    - name: setVnet
+    displayName: 'Set up VNET'
+    type: boolean
+    default: false
+    - name: setDatabaseTestData
+    displayName: 'Set testing data for database'
+    type: boolean
+    default: false
+    - name: setMappings
+    displayName: 'Upload mappings to blobstorage'
+    type: boolean
+    default: false
+    - name: azureResourceGroup
+    type: string
+
+
+    # mogen aangepast worden naar wens
+    variables:
+    - template: dataaccelerator_biceps_dev_parameters.yml
+
+
+    stages:
+    - stage: PREP
+    displayName: "Preparation"
+    jobs:
+    - job: PREP_checkresources
+    displayName: Check AIS general deployment resources
+    steps:
+    - task: AzureCLI@2
+    displayName: "Check & create deployment resources"
+    inputs:
+    azureSubscription: '${{ variables.serviceConnection }}'
+    scriptType: "pscore"
+    scriptLocation: "inlineScript"
+    failOnStandardError: false
+    powerShellIgnoreLASTEXITCODE: true
+    #Create Deployment RG and storage account.
+    inlineScript: |
+    az group create --name "${{ parameters.azureResourceGroup }}" --location "${{ variables.location }}"
+    $ErrorActionPreference = "SilentlyContinue"
+
+
+    # private dns zone
+    - stage: PDNSAzureCLI
+    condition: eq('${{ parameters.setVNET }}', 'true')
+    displayName: Private DNS zone aanmaken
+    jobs:
+    - job: AzureCLIVNet
+    displayName: 'Create Private DNS'
+    steps:
+    - checkout: self
+    - task: AzureCLI@2
+    inputs:
+    azureSubscription: '${{ variables.serviceConnection }}'
+    azurePowerShellVersion: LatestVersion
+    scriptType: "pscore"
+    scriptLocation: "inlineScript"
+    inlineScript: |
+    az network private-dns zone create -g "${{ parameters.azureResourceGroup }}" -n "${{ variables.PDNSname }}"
+
+    # vnet aanmaken
+    - stage: VNETAzureCLI
+    condition: eq('${{ parameters.setVNET }}', 'true')
+    displayName: VNET aanmaken
+    jobs:
+    - job: AzureCLIVNet
+    displayName: 'Create Vnet'
+    steps:
+    - checkout: self
+    - task: AzureCLI@2
+    inputs:
+    azureSubscription: '${{ variables.serviceConnection }}'
+    azurePowerShellVersion: LatestVersion
+    scriptType: "pscore"
+    scriptLocation: "inlineScript"
+    inlineScript: |
+    az network vnet create --name "${{ variables.dIPCompany }}-${{ variables.dIPName }}-${{ variables.environment }}-${{ variables.vnetName }}" --resource-group "${{ parameters.azureResourceGroup }}" --location "${{ variables.location }}" --address-prefixes "${{ variables.vnetAddressPrefix }}" --subnet-name "${{ variables.dIPCompany }}-${{ variables.dIPName }}-${{ variables.environment }}-${{ variables.subnetName }}" --subnet-prefixes "${{ variables.subnetAddressPrefix }}"
+
+    - stage: VALIDATE
+    displayName: "Validate templates"
+    pool:
+    vmImage: "ubuntu-latest"
+    jobs:
+    - template: './Templates/template_bicepprovision.yaml'
+    parameters:
+    whatIf: true
+    environment: '${{ variables.environment }}'
+    devopsEnvironment: '${{ variables.devopsEnvironment }}'
+    azureResourceGroup: ${{ parameters.azureResourceGroup }}
+    serviceConnection: '${{ variables.serviceConnection }}'
+    azureSubscription: '${{ variables.azureSubscription }}'
+    templatePath: '${{ variables.templatePath }}'
+    parametersPath: '${{ variables.parametersPath }}'
+    setModeComplete: ${{ parameters.setModeComplete }}
+
+    - stage: PROVISION
+    displayName: "Provision resources"
+    pool:
+    vmImage: "ubuntu-latest"
+    jobs:
+    - template: './Templates/template_bicepprovision.yaml'
+    parameters:
+    whatIf: false
+    environment: '${{ variables.environment }}'
+    devopsEnvironment: '${{ variables.devopsEnvironment }}'
+    azureResourceGroup: ${{ parameters.azureResourceGroup }}
+    serviceConnection: '${{ variables.serviceConnection }}'
+    azureSubscription: '${{ variables.azureSubscription }}'
+    templatePath: '${{ variables.templatePath }}'
+    parametersPath: '${{ variables.parametersPath }}'
+    setModeComplete: ${{ parameters.setModeComplete }}
+
+    # Powershell file uploaden
+    - stage: PWS
+    displayName: Provision .ps1's
+    pool:
+    vmImage: "ubuntu-latest"
+    jobs:
+    - job: pws
+    displayName: 'Deploy powershell script'
+    steps:
+    - checkout: self
+    - task: AzureCLI@2
+    displayName: 'Copy ps1 file from repo to blob storage'
+    inputs:
+    azureSubscription: '${{ variables.serviceConnection }}'
+    scriptType: 'pscore'
+    scriptLocation: 'inlineScript'
+    inlineScript: 'az storage blob upload-batch --source $(Build.SourcesDirectory)/dlwr.dip.dataaccelerator/Infra/Bicep/Scripts --destination data-accelerator-scripts --account-name ${{ variables.dIPCompany }}${{ variables.dIPName }}01${{ variables.environment }}store --overwrite'
+
+    # database powershell file uitvoeren
+    - stage: PowershellUitvoeren
+    condition: eq('${{ parameters.setDatabaseTestData }}', 'true')
+    displayName: Run database powershell
+    pool:
+    vmImage: "ubuntu-latest"
+    jobs:
+    - job: runPWS
+    displayName: 'Run PWS'
+    variables:
+    name: Powershell
+    databaseServerName: '${{ variables.dIPCompany }}-${{ variables.dIPName }}-${{ variables.environment }}-sqlserver.database.windows.net'
+    databaseName: '${{ variables.dIPCompany }}-${{ variables.dIPName }}-${{ variables.environment }}-database'
+    databaseUserID: '${{ variables.userID }}'
+    steps:
+    - checkout: self
+    - task: AzureKeyVault@2
+    inputs:
+    azureSubscription: '${{ variables.serviceConnection }}'
+    KeyVaultName: '${{ variables.keyvaultName }}'
+    SecretsFilter: '*'
+    RunAsPreJob: false
+    - task: Powershell@2
+    displayName: run powershell
+    inputs:
+    targetType: 'filePath'
+    filePath: $(Build.SourcesDirectory)${{ variables.PWSFile }}
+    arguments:  >
+    -name ${{ variables.name }}
+    -dbServerName '"${{variables.databaseServerName}}"'
+    -dbName '"${{variables.databaseName}}"'
+    -userID '"${{variables.databaseUserID}}"'
+    -userPW '$(userPW)'
+
+    # copy mappings from repo to blob
+    - stage: MAPPINGS
+    condition: eq('${{ parameters.setMappings }}', 'true')
+    displayName: Provision mappings
+    pool:
+    vmImage: "ubuntu-latest"
+    jobs:
+    - job: mappings
+    displayName: 'Deploy dIP mappings'
+    steps:
+    - checkout: self
+    - task: AzureCLI@2
+    displayName: 'Copy mappings from repo to blob storage'
+    inputs:
+    azureSubscription: '${{ variables.serviceConnection }}'
+    scriptType: 'pscore'
+    scriptLocation: 'inlineScript'
+    inlineScript: 'az storage blob upload-batch --source $(Build.SourcesDirectory)/dlwr.dip.dataaccelerator/Infra/Bicep/Queries --destination data-accelerator-queries --account-name ${{ variables.dIPCompany }}${{ variables.dIPName }}01${{ variables.environment }}store --overwrite'
+\end{lstlisting}
+
+\section{PowerShell}
+\label{sec:Powershell}
+\begin{lstlisting}
+    #fetches required Messier data and adds it to the database
+    param ($dbServerName, $dbName,$userID, $userPW)
+
+    $DBConnectionstring= "Server = $dbServerName; Database = $dbName; Integrated Security = false; User ID = $userID; Password= $userPW;"
+
+
+    $Url = "https://lguerriero.opendatasoft.com/api/records/1.0/search/?dataset=catalogue-de-messier&rows=110"
+
+    #connectie
+    $Connection = New-Object System.Data.SQLClient.SQLConnection
+    $Connection.ConnectionString =  $DBConnectionstring
+    $Connection.Open()
+
+    #command
+    $Command = New-Object System.Data.SQLClient.SQLCommand
+    $Command.Connection = $Connection
+    $Request = Invoke-WebRequest -Uri $Url
+
+    #deserialized object
+    $Messier = ConvertFrom-Json($Request.Content)
+    $records = $Messier.records
+    $Request = Invoke-WebRequest -Uri $Url
+
+
+    $createquery = "
+    IF OBJECT_ID(N'dbo.MessierCatalog', N'U') IS NOT NULL
+    DROP TABLE MessierCatalog
+    CREATE TABLE MessierCatalog
+    (ID VARCHAR(4) PRIMARY KEY, LatinName NVARCHAR(512), EnglishName NVARCHAR(512), FrenchName NVARCHAR(512), Declination NVARCHAR(64), RightAscention NVARCHAR(64), Magnitude TINYINT,	ImageLink NVARCHAR(MAX))
+    "
+
+    $Command.CommandText = $createquery
+    $Command.ExecuteNonQuery()
+
+    foreach($record in $records){
+        $frenchName = $record.fields.french_name_nom_francais
+        $latinName = $record.fields.latin_name_nom_latin
+        $magnitude = $record.fields.mag
+        $ID = $record.fields.messier
+        $enlishName = $record.fields.english_name_nom_en_anglais
+        $declination = $record.fields.dec
+        $rightAscention = $record.fields.ra
+        $imageLink = $record.fields.image
+
+        $insertquery="
+        INSERT INTO dbo.MessierCatalog
+        ([ID],[LatinName],[EnglishName],[FrenchName],[Declination],[RightAscention],[Magnitude],[ImageLink])
+        VALUES
+        ('$ID','$latinName','$englishName','$frenchName','$declination','$rightAscention','$magnitude','$imageLink')"
+        $Command.CommandText = $insertquery
+        $Command.ExecuteNonQuery()
+
+
+    }
+
+    $Connection.Close();
+\end{lstlisting}
+
 %%---------- Backmatter, referentielijst ---------------------------------------
 
 \backmatter{}

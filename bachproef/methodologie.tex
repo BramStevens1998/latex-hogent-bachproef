@@ -59,14 +59,14 @@ Er is ook een Private DNS zone ogezet om bij het gebruik van een Virtual network
 
 Als laatste is er een Keyvault toegevoegd. Deze bevat aanmeldingsgegevens en andere waarden die versleuteld zijn zodat die dan in de pipeline opgehaald en gebruikt kunnen worden op een veilige manier.
 
-Na het opstellen van deze omgeving manueel, zijn de hierboven benoemde delen omgezet naar ARM templates. Deze zijn op hun beurt omgevormd tot BICEP templates vanwege de hiervoor benoemde problemen die zich kunnen voordoen bij ARM. De templates zijn zodanig opgesteld dat ze automatisch de juiste naamgeving bevatten en samen kunnen werken.
+Na het opstellen van deze omgeving manueel, zijn de hierboven benoemde delen omgezet naar ARM templates. Deze zijn op hun beurt omgevormd tot BICEP templates vanwege de hiervoor benoemde problemen die zich kunnen voordoen bij ARM. De templates zijn zodanig opgesteld dat ze automatisch de juiste naamgeving bevatten en samen kunnen werken. De BICEP templates zijn te vinden in bijlage B.1 BICEPs.
 
 
 
 \subsection{\IfLanguageName{dutch}{Pipeline}{Pipeline}}%
 \label{sec:Pipeline}
 
-De BICEP bestanden die in voorgaande stage van de uitwerking aangemaakt zijn. Moeten nu via een pipeline geïntegrerd worden in Azure om zo de gehele omgeving op te zetten. Deze pipeline is te vinden in bijlage B.7 YAML. Deze is opgesteld met parameters die geïmporteerd worden uit een ander bestand zodat men deze kan personaliseren per omgeving waarin men de Data-Accelerator wenst te gebruiken. Hierdoor kan men aan de pipeline zelf niks veranderen maar wel de benamingen en specificaties doorgeven aan de BICEP templates, Azure Command Line Interface en het PowerShell script.
+De BICEP bestanden die in voorgaande stage van de uitwerking aangemaakt zijn. Moeten nu via een pipeline geïntegrerd worden in Azure om zo de gehele omgeving op te zetten. Deze pipeline is te vinden in bijlage B.2 YAML. Deze is opgesteld met parameters die geïmporteerd worden uit een ander bestand zodat men deze kan personaliseren per omgeving waarin men de Data-Accelerator wenst te gebruiken. Hierdoor kan men aan de pipeline zelf niks veranderen maar wel de benamingen en specificaties doorgeven aan de BICEP templates, Azure Command Line Interface en het PowerShell script.
 
 Eerst en vooral ziet men bovenaan het script enkele parameters staat die men dan kan selecteren om de omgeving naar wens op te zetten. Deze parameters omvatten de opties om een Virtual network aan te maken, de databank op te vullen met test data, de XSLT mappings en queries die men wilt uitvoeren met de Data-Accelerator op te slaan in het Storage Account en de Resource Group waarin men wilt te werk gaan. Dit kan teruggevonden worden in Figuur~\ref{fig:Opties}.
 
@@ -84,7 +84,7 @@ De hier op volgende stage binnen de pipeline spitst zich toe op het valideren va
 
 De provision stage maakt dan alle resources aan binnen de omgeving volgens de BICEP templates die opgesteld zijn. Dit proces neemt het grootste deel van de uitvoering in beslag maar verloopt ook volledig automatisch.
 
-Het deel dat hierop volgt slaat het PowerShell bestand dat benodigt is al men de databank wilt vullen op in het Storage Account en voert deze dan ook uit indien de optie geslecteerd is. Deze is zichtbaar in bijlage B.9 PowerShell. Dit script is ook personaliseerbaar via de variabelen die gebruikt worden in de pipeline en zijn doorgegeven aan het script om de correcte connectionstring op te stellen om toegang te verkrijgen tot de databank. Er werd in dit geval gekozen voor PowerShell omdat via YAML zelf of de Azure CLI het niet mogelijk was de databank te voorzien van correcte data. Deze werdt via een URL opgehaald en in de databank toegevoegd op basis van de parameters.
+Het deel dat hierop volgt slaat het PowerShell bestand dat benodigt is al men de databank wilt vullen op in het Storage Account en voert deze dan ook uit indien de optie geslecteerd is. Deze is zichtbaar in bijlage B.3 PowerShell. Dit script is ook personaliseerbaar via de variabelen die gebruikt worden in de pipeline en zijn doorgegeven aan het script om de correcte connectionstring op te stellen om toegang te verkrijgen tot de databank. Er werd in dit geval gekozen voor PowerShell omdat via YAML zelf of de Azure CLI het niet mogelijk was de databank te voorzien van correcte data. Deze werdt via een URL opgehaald en in de databank toegevoegd op basis van de parameters.
 
 Ten laatste worden de overige bestanden, namelijk die XSLT mappings en queries ook indien de optie geslecteerd is, in het Storage Account opgeslagen zodat men kan gebruik maken van XSLT met de Data-Accelerator.
 
