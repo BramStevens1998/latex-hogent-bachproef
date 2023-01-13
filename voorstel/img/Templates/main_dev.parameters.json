@@ -1,0 +1,46 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "dIPEnvironment": {
+            "value": "dev"
+        },
+        "dIPName": {
+            "value": "da"
+        },
+        "dIPCompany": {
+            "value": "bs"
+        },
+        "dIPLocation": {
+            "value": "West Europe"
+        },
+        "KeyvaultName": {
+            "value": "trac-kv-bramstevens"
+        },
+        "UserAssignedIdentityName": {
+            "value": "bs-da-dev-id"
+        },
+        "adminName": {
+            "value": "BramStevens"
+        },
+        "adminPW": {
+            "value": "QkeJosm5a?"
+        },
+        "usePE": {
+            "value": false
+        },
+        "vNet": {
+            "value": "/subscriptions/71e33943-63fc-4631-85c7-ed164c40c1cd/resourceGroups/rg-Sandbox-BramStevens/providers/Microsoft.Network/virtualNetworks/bs-da-dev-VNet"
+        },
+        "privateDnsZoneWeb": {
+            "value": "/subscriptions/71e33943-63fc-4631-85c7-ed164c40c1cd/resourcegroups/rg-Sandbox-BramStevens/providers/Microsoft.Network/privateDnsZones/dnsZone.stevensbram"
+        },
+        "privateDnsZoneBlob": {
+            "value": "/subscriptions/71e33943-63fc-4631-85c7-ed164c40c1cd/resourcegroups/rg-Sandbox-BramStevens/providers/Microsoft.Network/privateDnsZones/dnsZone.stevensbram"
+        },
+        "privateDnsZoneQueue": {
+            "value": "/subscriptions/71e33943-63fc-4631-85c7-ed164c40c1cd/resourcegroups/rg-Sandbox-BramStevens/providers/Microsoft.Network/privateDnsZones/dnsZone.stevensbram"
+        }
+    }
+}
+

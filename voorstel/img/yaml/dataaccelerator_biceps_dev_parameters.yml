@@ -1,0 +1,25 @@
+# variables to be used in the dataaccelerator_biceps_dev.yml
+
+variables:
+  # DB parameters to be customised
+  userID: 'BramStevens'
+  keyvaultName: 'trac-kv-bramstevens'
+  # global parameters to be customised
+  serviceConnection: 'DLW CS&P'
+  location: 'West Europe'
+  environment: 'dev'
+  dIPCompany: 'bs'
+  dIPName: 'da'
+  devopsEnvironment: 'AIS-DEV'
+  azureSubscription: 'MS Integration'
+  mailadres: 'bram.stevens@delaware.pro'
+  # VNET parameters to be customised
+  vnetName: 'VNet'
+  vnetAddressPrefix: '151.248.0.0/16'
+  subnetName: 'subnet'
+  subnetAddressPrefix: '151.248.52.0/24'
+  PDNSname: 'dnsZone.stevensbram'
+  #not to be changed
+  PWSFile: '/dlwr.dip.dataaccelerator/Infra/Bicep/Scripts/Messierdata.ps1'
+  parametersPath: '/dlwr.dip.dataaccelerator/Infra/Bicep/Templates/main_dev.parameters.json'
+  templatePath: '/dlwr.dip.dataaccelerator/Infra/Bicep/Templates/main.template.bicep'

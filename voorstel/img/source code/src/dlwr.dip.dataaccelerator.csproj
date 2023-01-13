@@ -1,0 +1,43 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+	<PropertyGroup>
+		<TargetFramework>netcoreapp3.1</TargetFramework>
+		<AzureFunctionsVersion>v3</AzureFunctionsVersion>
+		<RootNamespace>Dlw.Integration.DataAccelerator</RootNamespace>
+		<UserSecretsId>01cb2f69-e35f-4f06-a83a-fa8b07019290</UserSecretsId>
+	</PropertyGroup>
+	<PropertyGroup>
+		<GenerateDocumentationFile>true</GenerateDocumentationFile>
+		<DocumentationFile>..\Documentation\DataAccelerator.XML</DocumentationFile>
+		<NoWarn>$(NoWarn);1591</NoWarn>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<PackageReference Include="ChoETL" Version="1.2.1.48" />
+		<PackageReference Include="ChoETL.JSON" Version="1.2.1.48" />
+		<PackageReference Include="ClosedXML" Version="0.96.0" />
+		<PackageReference Include="CsvHelper" Version="28.0.1" />
+		<PackageReference Include="DocumentFormat.OpenXml" Version="2.18.0" />
+		<PackageReference Include="ExcelDataReader" Version="3.6.0" />
+		<PackageReference Include="ExcelDataReader.DataSet" Version="3.6.0" />
+		<PackageReference Include="Microsoft.NET.Sdk.Functions" Version="3.0.13" />
+		<PackageReference Include="Microsoft.Azure.Functions.Extensions" Version="1.1.0" />
+		<PackageReference Include="Microsoft.Azure.WebJobs.Extensions.Http" Version="3.0.12" />
+		<PackageReference Include="Microsoft.Azure.WebJobs.Extensions.DurableTask" Version="2.5.1" />
+		<PackageReference Include="Microsoft.Azure.WebJobs.Script.ExtensionsMetadataGenerator" Version="4.0.1" />
+		<PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="3.0.0" />
+		<PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
+		<PackageReference Include="System.Data.SqlClient" Version="4.8.3" />
+		<PackageReference Include="Azure.Storage.Files.Shares" Version="12.8.0" />
+		<PackageReference Include="Azure.Storage.Blobs" Version="12.10.0" />
+	</ItemGroup>
+	<ItemGroup>
+		<None Update="host.json">
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+			<CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+		</None>
+		<None Update="local.settings.json">
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+			<CopyToPublishDirectory>Never</CopyToPublishDirectory>
+		</None>
+	</ItemGroup>
+</Project>

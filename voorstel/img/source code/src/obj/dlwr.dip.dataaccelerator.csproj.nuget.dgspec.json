@@ -1,0 +1,131 @@
+{
+  "format": 1,
+  "restore": {
+    "C:\\Users\\stevensb\\OneDrive - delaware\\Desktop\\repo Simon\\dlwr.dIP.simon\\dlwr.dip.dataaccelerator\\src\\dlwr.dip.dataaccelerator.csproj": {}
+  },
+  "projects": {
+    "C:\\Users\\stevensb\\OneDrive - delaware\\Desktop\\repo Simon\\dlwr.dIP.simon\\dlwr.dip.dataaccelerator\\src\\dlwr.dip.dataaccelerator.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "C:\\Users\\stevensb\\OneDrive - delaware\\Desktop\\repo Simon\\dlwr.dIP.simon\\dlwr.dip.dataaccelerator\\src\\dlwr.dip.dataaccelerator.csproj",
+        "projectName": "dlwr.dip.dataaccelerator",
+        "projectPath": "C:\\Users\\stevensb\\OneDrive - delaware\\Desktop\\repo Simon\\dlwr.dIP.simon\\dlwr.dip.dataaccelerator\\src\\dlwr.dip.dataaccelerator.csproj",
+        "packagesPath": "C:\\Users\\stevensb\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\stevensb\\OneDrive - delaware\\Desktop\\repo Simon\\dlwr.dIP.simon\\dlwr.dip.dataaccelerator\\src\\obj\\",
+        "projectStyle": "PackageReference",
+        "configFilePaths": [
+          "C:\\Users\\stevensb\\AppData\\Roaming\\NuGet\\NuGet.Config"
+        ],
+        "originalTargetFrameworks": [
+          "netcoreapp3.1"
+        ],
+        "sources": {
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "netcoreapp3.1": {
+            "targetAlias": "netcoreapp3.1",
+            "projectReferences": {}
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        }
+      },
+      "frameworks": {
+        "netcoreapp3.1": {
+          "targetAlias": "netcoreapp3.1",
+          "dependencies": {
+            "Azure.Storage.Blobs": {
+              "target": "Package",
+              "version": "[12.10.0, )"
+            },
+            "Azure.Storage.Files.Shares": {
+              "target": "Package",
+              "version": "[12.8.0, )"
+            },
+            "ChoETL": {
+              "target": "Package",
+              "version": "[1.2.1.48, )"
+            },
+            "ChoETL.JSON": {
+              "target": "Package",
+              "version": "[1.2.1.48, )"
+            },
+            "ClosedXML": {
+              "target": "Package",
+              "version": "[0.96.0, )"
+            },
+            "CsvHelper": {
+              "target": "Package",
+              "version": "[28.0.1, )"
+            },
+            "DocumentFormat.OpenXml": {
+              "target": "Package",
+              "version": "[2.18.0, )"
+            },
+            "ExcelDataReader": {
+              "target": "Package",
+              "version": "[3.6.0, )"
+            },
+            "ExcelDataReader.DataSet": {
+              "target": "Package",
+              "version": "[3.6.0, )"
+            },
+            "Microsoft.Azure.Functions.Extensions": {
+              "target": "Package",
+              "version": "[1.1.0, )"
+            },
+            "Microsoft.Azure.WebJobs.Extensions.DurableTask": {
+              "target": "Package",
+              "version": "[2.5.1, )"
+            },
+            "Microsoft.Azure.WebJobs.Extensions.Http": {
+              "target": "Package",
+              "version": "[3.0.12, )"
+            },
+            "Microsoft.Azure.WebJobs.Script.ExtensionsMetadataGenerator": {
+              "target": "Package",
+              "version": "[4.0.1, )"
+            },
+            "Microsoft.Extensions.DependencyInjection": {
+              "target": "Package",
+              "version": "[3.0.0, )"
+            },
+            "Microsoft.NET.Sdk.Functions": {
+              "target": "Package",
+              "version": "[3.0.13, )"
+            },
+            "Newtonsoft.Json": {
+              "target": "Package",
+              "version": "[13.0.1, )"
+            },
+            "System.Data.SqlClient": {
+              "target": "Package",
+              "version": "[4.8.3, )"
+            }
+          },
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48",
+            "net481"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\6.0.404\\RuntimeIdentifierGraph.json"
+        }
+      }
+    }
+  }
+}
