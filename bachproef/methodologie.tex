@@ -36,12 +36,12 @@ Het onderzoek werd afgesloten met een test van de omgeving en of deze samen kon 
 \subsection{\IfLanguageName{dutch}{Documentatie}{Documentatie}}%
 \label{sec:Documentatie}
 
-Voordat er een omgeving opgesteld wordt moet de code eerst beschreven worden van de Data-Accelerator. Dit gebeurd aan de hand van XML beschrijvingen bij elke functie en klasse die de accelerator omvat. Deze bestond uit 53 klassen die elk meerdere functies bevat. Deze zijn terug te vinden in bijlage B.4 Documentatie. Het eerste deel van deze klassen zijn gegroepeerd volgens hun functie namelijk: Activiteiten, Entrypoints en Orchestratie. Het tweede deel werd dan gegroepeerd op basis van hun ondersteuning. Deze zijn: Communitcatie, Conversie, Helpers, Interfaces, IOC, SQL, Storage en XSLT. De XML beschrijvingen bij elke functie of klasse bestonden uit hun samenvatting, gebruikte parameters, wat deze juist inhouden en wat er mogelijks kon geresulteerd worden bij een functie.
+Voordat er een omgeving opgesteld wordt moet de code eerst beschreven worden van de Data-Accelerator. Dit gebeurd aan de hand van XML beschrijvingen bij elke functie en klasse die de accelerator omvat. Deze bestond uit 53 klassen die elk meerdere functies bevat. Het eerste deel van deze klassen zijn gegroepeerd volgens hun functie namelijk: Activiteiten, Entrypoints en Orchestratie. Het tweede deel werd dan gegroepeerd op basis van hun ondersteuning. Deze zijn: Communitcatie, Conversie, Helpers, Interfaces, IOC, SQL, Storage en XSLT. De XML beschrijvingen bij elke functie of klasse bestonden uit hun samenvatting, gebruikte parameters, wat deze juist inhouden en wat er mogelijks kon geresulteerd worden bij een functie.
 
 \subsection{\IfLanguageName{dutch}{BICEP}{BICEP}}%
 \label{sec:BICEP}
 
-Om de Data-Accelerator te kunnen gebruiken werden in Microsoft Azure binnen een Resource Group de volgende omgevingen aangemaakt die ook zichtbaar zijn in bijlage B.5 Azure:
+Om de Data-Accelerator te kunnen gebruiken werden in Microsoft Azure binnen een Resource Group de volgende omgevingen aangemaakt:
 
 Een SQL database om de data die gebruikt wordt door de Data-Accelerator bij te houden.
 
@@ -59,7 +59,47 @@ Er is ook een Private DNS zone ogezet om bij het gebruik van een Virtual network
 
 Als laatste is er een Keyvault toegevoegd. Deze bevat aanmeldingsgegevens en andere waarden die versleuteld zijn zodat die dan in de pipeline opgehaald en gebruikt kunnen worden op een veilige manier.
 
-Na het opstellen van deze omgeving manueel, zijn de hierboven benoemde delen omgezet naar ARM templates. Deze zijn op hun beurt omgevormd tot BICEP templates vanwege de hiervoor benoemde problemen die zich kunnen voordoen bij ARM. De templates zijn zodanig opgesteld dat ze automatisch de juiste naamgeving bevatten en samen kunnen werken. Deze zijn zichtbaar in bijlage B.6 BICEP.
+Na het opstellen van deze omgeving manueel, zijn de hierboven benoemde delen omgezet naar ARM templates. Deze zijn op hun beurt omgevormd tot BICEP templates vanwege de hiervoor benoemde problemen die zich kunnen voordoen bij ARM. De templates zijn zodanig opgesteld dat ze automatisch de juiste naamgeving bevatten en samen kunnen werken.
+
+\begin{lstlisting}
+   // main.template.bicep
+   //* --- PARAMETERS ---
+   @description('Name of the environment to deploy the resources to')
+   param dIPEnvironment string
+   param dIPCompany string
+   param dIPLocation string = resourceGroup().location
+   param dIPName string
+   param KeyvaultName string
+   param UserAssignedIdentityName string
+   param adminName string
+   param adminPW string
+   param usePE bool
+   param vNet string
+   param privateDnsZoneBlob string
+   param privateDnsZoneQueue string
+   param privateDnsZoneWeb string
+
+   //* --- MODULES ---
+   module dIP_Framework 'Framework/_framework.template.bicep'  = {
+       name: 'dip-framework'
+       params: {
+           dIPEnvironment: dIPEnvironment
+           dIPCompany: dIPCompany
+           dIPLocation: dIPLocation
+           dIPName: dIPName
+           KeyVaultName: KeyvaultName
+           UserAssignedIdentityName: UserAssignedIdentityName
+           adminName: adminName
+           adminPW: adminPW
+           usePE: usePE
+           vNet: vNet
+           privateDnsZoneBlob: privateDnsZoneBlob
+           privateDnsZoneQueue: privateDnsZoneQueue
+           privateDnsZoneWeb: privateDnsZoneWeb
+       }
+   }
+
+\end{lstlisting}
 
 \subsection{\IfLanguageName{dutch}{Pipeline}{Pipeline}}%
 \label{sec:Pipeline}
@@ -114,7 +154,7 @@ Na het creëren van de API kan deze geselecteerd worden en ziet men het scherm d
 
 \begin{figure}
     \centering
-    \includegraphics[scale=0.40]{../img/API.png}
+    \includegraphics[scale=0.30]{../img/API.png}
     \caption{\label{fig:API}API overview}
 \end{figure}
 
