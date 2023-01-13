@@ -18,8 +18,21 @@ Echter om deze Data-Accelerator te gebruiken moet er omgeving opgezet worden in 
 
 Om deze pipeline uit te voeren moesten er ook BICEP bestanden aangemaakt worden, deze zijn code-gebaseerde bestanden toegepspitst op een deel van de omgeving die benodigd is zoals een databank. Deze zijn getest qua functionaliteit door Dhr. Dedeken zelf om legitimiteit toe te kennen aan de opgezette omgeving. Zodat dit onderzoek binnen de bachelorproef een beter beeld oplevert.
 
-\subsection{\IfLanguageName{dutch}{verloop}{verloop}}%
+\section{\IfLanguageName{dutch}{verloop}{verloop}}%
 \label{sec:Verloop}
+
+Na het uitwerken van de literatuurstudie is dit onderzoek gecontinueerd met het configureren en opzetten van de benodigde services. Dit bestaat uit het documenteren van alle klassen en functies binnen de Data-Accelerator, aangezien dit nog niet aanwezig was. Op die manier kon de interne werking van de Data-Accelerator bestudeerd worden en was er controle van Dhr. Dedeken uit om mogelijke interpretatie fouten te corrigeren. Dit wordt dan ook de documenteerfase genoemd binnen het onderzoek. De documentatie werd ook geschreven aan de hand van XML bijschriften bij elke functie en klasse binnen de 53 klassen die samen de Data-Accelerator vormen.
+
+Het volgende deel van de uitwerking was om de gehele omgeving manueel op te zetten binnen Azure met als doel een eerste blik op de werking van de Data-Accelerator te krijgen en zijn functies te testen. Hierbij werden verschillende resources binneen Azure opgezet en voorzien van benodigde data en instellingen om een werkend geheel te vormen. Dit vormt dan ook de basis om de BICEP bestanden op te stellen.
+
+Vervolgens werden BICEP templates opgesteld die via enkele globaal gedefineerde parameters een omgeving konden opzetten. Hiervoor werden van de manuele opgezette omgeving in Azure ARM templates gegenereerd. Deze zijn dan manueel omgevormd tot BICEP templates vanwege de herbruikbaarheid in meerdere omgevingen. De keuze voor BICEP kwam er doordat als men zich bij ARM templates houdt en er loopt iets mis bij het opzetten van de omgeving, deze alle voorgaande data verwijderd. Dit is catastrofaal bij een project met klanten die hier volledig rond opgezet zijn.
+
+Het volgende deel was het opstellen van een pipeline in YAML die via Azure Pipelines uitgevoerd kon worden. Hierin werden parameters meegegeven die personaliseerbaar gemaakt zijn om zo bij verschillende omgevingen correcte naamgeving en specificaties te hebben. In deze pipeline worden dan ook de BICEP templates gecontroleerd op syntaxfouten en indien alles correct bevonden is, uitgevoerd. Hierbij wordt er ook gebruik gemaakt van de Azure Command Line Interface om delen te voorzien. Er wordt ook een PowerShell script uitgevoerd om de benodigde databank in deze opstelling te voorzien van data. In een productieomgeving zal dit beschikbaar gesteld worden door de werkgever maar voor dit onderzoek is er één gecreëerd.
+
+Als voorlaatste deel van dit onderzoek werd er dan gekeken hoe men GraphQL of soortgelijke functionaliteit kon toevoegen om deze software uit te breiden. Hiervoor is er ook gekeken naar mogelijke services die al reeds door Azure voorzien zijn. Stel dat dit mogelijk is, kan de reeds bestaande omgeving snel uitgebreid en ook geautomatiseerd worden via de vooropgestelde pipeline om een vlotte opzet bij projecten te garanderen.
+
+Het onderzoek werd afgesloten met een test van de omgeving en of deze samen kon werken met de Data-Accelerator om zo een extra tool bij het Zwitsers zakmes toe te voegen. Dit wordt vervolgens verwerkt tot een gepaste conclusie binnen deze bachelorproef.
+
 %% TODO: Hoe ben je te werk gegaan? Verdeel je onderzoek in grote fasen, en
 %% licht in elke fase toe welke stappen je gevolgd hebt. Verantwoord waarom je
 %% op deze manier te werk gegaan bent. Je moet kunnen aantonen dat je de best
