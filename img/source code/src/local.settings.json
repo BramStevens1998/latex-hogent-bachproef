@@ -1,0 +1,18 @@
+{
+  "IsEncrypted": false,
+  "Values": {
+    "AzureWebJobsStorage": "UseDevelopmentStorage=true",
+    "FUNCTIONS_WORKER_RUNTIME": "dotnet",
+    "TaskHubName": "dataacceleratortaskhub",
+
+    "IOCContainer:Type": "Blob",
+    "IOCContainer:SQLEnvironments:Default:Name": "Default",
+    "IOCContainer:SQLEnvironments:Default:ConnectionString": "Server=tcp:bs-da-dev-sqlserver.database.windows.net,1433;Initial Catalog=bs-da-dev-database;Persist Security Info=False;User ID=BramStevens;Password=QkeJosm5a?;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;",
+    "IOCContainer:StorageEnvironments:Default:Name": "Default",
+    "IOCContainer:StorageEnvironments:Default:ConnectionString": "DefaultEndpointsProtocol=https;AccountName=bsda01devstore;AccountKey=MSkDK89/xWiLEJr3Mrf410anEffaePcF6zzURep/u/mNE+CrAepsePVHGvbe45E1oF8rs6rpooKZ+AStdI15iw==;EndpointSuffix=core.windows.net",
+    "IOCContainer:StorageEnvironments:Default:QueryContainer": "data-accelerator-queries",
+    "IOCContainer:StorageEnvironments:Default:StoredProcedureContainer": "data-accelerator-stored-procedures",
+    "IOCContainer:StorageEnvironments:Default:MappingContainer": "data-accelerator-mappings"
+    
+  }
+}

@@ -1,0 +1,191 @@
+trigger: none
+
+name: $(Date:yyyyMMdd)-$(Rev:r)
+
+parameters:
+  - name: setModeComplete
+    displayName: 'Provision using mode = Complete'
+    type: boolean
+    default: false
+  - name: setVnet
+    displayName: 'Set up VNET'
+    type: boolean
+    default: false
+  - name: setDatabaseTestData
+    displayName: 'Set testing data for database'
+    type: boolean
+    default: false
+  - name: setMappings
+    displayName: 'Upload mappings to blobstorage'
+    type: boolean
+    default: false
+  - name: azureResourceGroup
+    type: string
+ 
+
+# mogen aangepast worden naar wens
+variables:
+    - template: dataaccelerator_biceps_dev_parameters.yml
+  
+
+stages: 
+  - stage: PREP
+    displayName: "Preparation"
+    jobs:
+      - job: PREP_checkresources
+        displayName: Check AIS general deployment resources
+        steps:
+          - task: AzureCLI@2
+            displayName: "Check & create deployment resources"
+            inputs:
+              azureSubscription: '${{ variables.serviceConnection }}'
+              scriptType: "pscore"
+              scriptLocation: "inlineScript"
+              failOnStandardError: false
+              powerShellIgnoreLASTEXITCODE: true
+              #Create Deployment RG and storage account.
+              inlineScript: |
+                az group create --name "${{ parameters.azureResourceGroup }}" --location "${{ variables.location }}"
+                $ErrorActionPreference = "SilentlyContinue"
+          
+
+# private dns zone
+  - stage: PDNSAzureCLI
+    condition: eq('${{ parameters.setVNET }}', 'true')
+    displayName: Private DNS zone aanmaken
+    jobs:
+    - job: AzureCLIVNet
+      displayName: 'Create Private DNS'
+      steps:
+        - checkout: self
+        - task: AzureCLI@2
+          inputs: 
+            azureSubscription: '${{ variables.serviceConnection }}'
+            azurePowerShellVersion: LatestVersion
+            scriptType: "pscore"
+            scriptLocation: "inlineScript"
+            inlineScript: |
+              az network private-dns zone create -g "${{ parameters.azureResourceGroup }}" -n "${{ variables.PDNSname }}"
+ 
+# vnet aanmaken 
+  - stage: VNETAzureCLI
+    condition: eq('${{ parameters.setVNET }}', 'true')
+    displayName: VNET aanmaken
+    jobs:
+    - job: AzureCLIVNet
+      displayName: 'Create Vnet'
+      steps:
+        - checkout: self
+        - task: AzureCLI@2
+          inputs: 
+            azureSubscription: '${{ variables.serviceConnection }}'
+            azurePowerShellVersion: LatestVersion
+            scriptType: "pscore"
+            scriptLocation: "inlineScript"
+            inlineScript: |
+              az network vnet create --name "${{ variables.dIPCompany }}-${{ variables.dIPName }}-${{ variables.environment }}-${{ variables.vnetName }}" --resource-group "${{ parameters.azureResourceGroup }}" --location "${{ variables.location }}" --address-prefixes "${{ variables.vnetAddressPrefix }}" --subnet-name "${{ variables.dIPCompany }}-${{ variables.dIPName }}-${{ variables.environment }}-${{ variables.subnetName }}" --subnet-prefixes "${{ variables.subnetAddressPrefix }}"
+ 
+  - stage: VALIDATE
+    displayName: "Validate templates"
+    pool:
+      vmImage: "ubuntu-latest"
+    jobs:
+      - template: './Templates/template_bicepprovision.yaml'
+        parameters:
+          whatIf: true
+          environment: '${{ variables.environment }}'
+          devopsEnvironment: '${{ variables.devopsEnvironment }}'
+          azureResourceGroup: ${{ parameters.azureResourceGroup }}
+          serviceConnection: '${{ variables.serviceConnection }}'
+          azureSubscription: '${{ variables.azureSubscription }}'
+          templatePath: '${{ variables.templatePath }}'
+          parametersPath: '${{ variables.parametersPath }}'
+          setModeComplete: ${{ parameters.setModeComplete }}
+  
+  - stage: PROVISION
+    displayName: "Provision resources"
+    pool:
+      vmImage: "ubuntu-latest"
+    jobs:
+      - template: './Templates/template_bicepprovision.yaml'
+        parameters:
+          whatIf: false
+          environment: '${{ variables.environment }}'
+          devopsEnvironment: '${{ variables.devopsEnvironment }}'
+          azureResourceGroup: ${{ parameters.azureResourceGroup }}
+          serviceConnection: '${{ variables.serviceConnection }}'
+          azureSubscription: '${{ variables.azureSubscription }}'
+          templatePath: '${{ variables.templatePath }}'
+          parametersPath: '${{ variables.parametersPath }}'
+          setModeComplete: ${{ parameters.setModeComplete }}
+
+# Powershell file uploaden
+  - stage: PWS
+    displayName: Provision .ps1's
+    pool:
+      vmImage: "ubuntu-latest"
+    jobs:
+    - job: pws
+      displayName: 'Deploy powershell script'
+      steps:
+        - checkout: self
+        - task: AzureCLI@2
+          displayName: 'Copy ps1 file from repo to blob storage'
+          inputs:
+            azureSubscription: '${{ variables.serviceConnection }}'
+            scriptType: 'pscore'
+            scriptLocation: 'inlineScript'
+            inlineScript: 'az storage blob upload-batch --source $(Build.SourcesDirectory)/dlwr.dip.dataaccelerator/Infra/Bicep/Scripts --destination data-accelerator-scripts --account-name ${{ variables.dIPCompany }}${{ variables.dIPName }}01${{ variables.environment }}store --overwrite'
+
+# database powershell file uitvoeren
+  - stage: PowershellUitvoeren
+    condition: eq('${{ parameters.setDatabaseTestData }}', 'true')
+    displayName: Run database powershell
+    pool:
+      vmImage: "ubuntu-latest"
+    jobs:
+      - job: runPWS 
+        displayName: 'Run PWS'
+        variables:
+          name: Powershell
+          databaseServerName: '${{ variables.dIPCompany }}-${{ variables.dIPName }}-${{ variables.environment }}-sqlserver.database.windows.net'
+          databaseName: '${{ variables.dIPCompany }}-${{ variables.dIPName }}-${{ variables.environment }}-database'
+          databaseUserID: '${{ variables.userID }}'
+        steps:
+          - checkout: self
+          - task: AzureKeyVault@2
+            inputs:
+              azureSubscription: '${{ variables.serviceConnection }}'
+              KeyVaultName: '${{ variables.keyvaultName }}'
+              SecretsFilter: '*'
+              RunAsPreJob: false
+          - task: Powershell@2
+            displayName: run powershell
+            inputs:
+              targetType: 'filePath'
+              filePath: $(Build.SourcesDirectory)${{ variables.PWSFile }}
+              arguments:  >
+                -name ${{ variables.name }}
+                -dbServerName '"${{variables.databaseServerName}}"'
+                -dbName '"${{variables.databaseName}}"'
+                -userID '"${{variables.databaseUserID}}"'
+                -userPW '$(userPW)'       
+
+  # copy mappings from repo to blob            
+  - stage: MAPPINGS
+    condition: eq('${{ parameters.setMappings }}', 'true')
+    displayName: Provision mappings
+    pool:
+      vmImage: "ubuntu-latest"
+    jobs:
+      - job: mappings
+        displayName: 'Deploy dIP mappings'
+        steps:
+          - checkout: self
+          - task: AzureCLI@2
+            displayName: 'Copy mappings from repo to blob storage'
+            inputs:
+              azureSubscription: '${{ variables.serviceConnection }}'
+              scriptType: 'pscore'
+              scriptLocation: 'inlineScript'
+              inlineScript: 'az storage blob upload-batch --source $(Build.SourcesDirectory)/dlwr.dip.dataaccelerator/Infra/Bicep/Queries --destination data-accelerator-queries --account-name ${{ variables.dIPCompany }}${{ variables.dIPName }}01${{ variables.environment }}store --overwrite'
