@@ -76,12 +76,14 @@ De hier op volgende stage binnen de pipeline spitst zich toe op het valideren va
 
 De provision stage maakt dan alle resources aan binnen de omgeving volgens de BICEP templates die opgesteld zijn. Dit proces neemt het grootste deel van de uitvoering in beslag maar verloopt ook volledig automatisch.
 
-Het deel dat hierop volgt slaat het PowerShell bestand dat benodigt is al men de databank wilt vullen op in het Storage Account en voert deze dan ook uit indien de optie geslecteerd is. Deze is zichtbaar in bijlage B.9 PowerShell. Dit script is ook personaliseerbaar via de variabelen die gebruikt worden in de pipeline en zijn doorgegeven aan het script om de correcte connectionstring op te stellen om toegang te verkrijgen tot de databank.
+Het deel dat hierop volgt slaat het PowerShell bestand dat benodigt is al men de databank wilt vullen op in het Storage Account en voert deze dan ook uit indien de optie geslecteerd is. Deze is zichtbaar in bijlage B.9 PowerShell. Dit script is ook personaliseerbaar via de variabelen die gebruikt worden in de pipeline en zijn doorgegeven aan het script om de correcte connectionstring op te stellen om toegang te verkrijgen tot de databank. Er werd in dit geval gekozen voor PowerShell omdat via YAML zelf of de Azure CLI het niet mogelijk was de databank te voorzien van correcte data. Deze werdt via een URL opgehaald en in de databank toegevoegd op basis van de parameters.
 
 Ten laatste worden de overige bestanden, namelijk die XSLT mappings en queries ook indien de optie geslecteerd is, in het Storage Account opgeslagen zodat men kan gebruik maken van XSLT met de Data-Accelerator.
 
 Deze stappen worden dan bij de opstart van de pipeline doorlopen op basis van geselecteerde opties zoals verduidelijkt bij de pipeline. Dit proces neemt gemiddeld een vijftiental minuten in beslag waarna de volledige omgeving aangemaakt is en bijna klaar is voor gebruik.
 Het engiste dat nog moet gebeuren is de connectionstring naar de SQL databank en de Storage Account toevoegen bij de local settings van de Data-Accelerator. Als men nu de accelerator laat draaien kan men via gepersonaliseerde requests data opvragen en bewerken uit de gecreëerde databank. Van hier uit wordt er bekeken hoe men extra functionaliteit omtrent GraphQL of gelijkmatige Azure toepassingen kan toevoegen.
+
+
 %% TODO: Hoe ben je te werk gegaan? Verdeel je onderzoek in grote fasen, en
 %% licht in elke fase toe welke stappen je gevolgd hebt. Verantwoord waarom je
 %% op deze manier te werk gegaan bent. Je moet kunnen aantonen dat je de best
