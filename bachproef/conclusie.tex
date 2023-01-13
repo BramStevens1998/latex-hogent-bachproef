@@ -4,7 +4,15 @@
 
 \chapter{Conclusie}%
 \label{ch:conclusie}
+Doorheen deze bachelorproef wordt er een antwoord gegeven op de volgende onderzoeksvraag: "Hoe kan GraphQL geïmplementeerd worden in een zelfontwikkelde accelerator?". Hiervoor is tijdens de studie de Data-Accelerator gedocumenteerd geweest. Dit werdt ogpevolgd door het creëren van BICEP templates van de benodigde resources om de delen van de omgeving aan te maken. Vervolgens werd er een pipeline opgesteld om deze ook uitvoerbaar te maken binnen Microsoft Azure en alle opties die benodigd kunnen zijn mogelijk te maken.
 
+De aangemaakte omgeving werkte zoals verlangt en stelde de Data-Accelerator in staat om data in een databank, gevuld door een PowerShell script, te bewerken of op te vragen. Dit alles gebeurde op een veilige manier door het gebruik van vercheidene resources binnen Azure die daar voor instaan zoals een Managed Identity. De pipeline en BICEP templates zijn ook gebruiksklaar na personalisatie van slechts enkele parameters en variabelen die ook afgezonderd zijn van de pipeline zelf. Op die manier kan een vlekkeloze werking en toepassing bijna gegarandeerd worden. De uitvoering hiervan wees ook aan hoe snel de benodigde omgeving kan opgezet worden ten opzichte van alles manueel uit te voeren en dan nog te moeten testen. Wat manueel toch wel enkele uren uit een werkdag haalt, gebeurd nu op ongeveer 15 minuten.
+
+Na het opzetten van de omgeving bleek dan ook dat er op een relatief eenvoudige manier een GraphQL implementatie kan toegevoegd worden en deze op meer vlakken kan gebruikt worden dan er verwacht werd. Voor het onderzoek en tijdens de literatuurstudie was de verwachting nog altijd dat er een alternatief moest gezocht worden of men de code van de accelerator ging moeten aanpassen om GraphQL te kunnen toevoegen aan de omgeving. Echter bleek dit in realiteit slechts een extra resource te zijn die aan de omgeving kon worden toegevoegd. Eenmaal deze installatie voltooid was kon men kiezen uit meerdere opties waarvan een groot deel zoals Logic en Function apps al van nature ondersteuning hadden.
+
+Als Delaware opteert om dit een vaste toegevoegde waarde te maken bij de accelerator, kan deze ook via een BICEP template aan de YAML pipeline toegevoegd en automatisch met de omgeving opgezet worden.
+
+Om dit onderzoek af te ronden moet ook wel vermeld worden dat er echter nog heel veel verder onderzocht kan worden. Hierbij is een mogelijks vervolgonderzoek in hoeverre Logic en Function Apps kunnen gebruikt worden en hoe de Data-Accelerator zelf extra uitbreidingen kan bieden op de GraphQL API resource.
 % TODO: Trek een duidelijke conclusie, in de vorm van een antwoord op de
 % onderzoeksvra(a)g(en). Wat was jouw bijdrage aan het onderzoeksdomein en
 % hoe biedt dit meerwaarde aan het vakgebied/doelgroep?
