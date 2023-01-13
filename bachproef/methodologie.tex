@@ -5,6 +5,21 @@
 \chapter{\IfLanguageName{dutch}{Methodologie}{Methodology}}%
 \label{ch:methodologie}
 
+In deze bachelorproef wordt er een onderzoek op kwalitatieve en kwantitatieve wijze uitgevoerd. Op deze manier trachten we de volgende onderzoeksvraag te beantwoorden: "Kan GraphQL of een soortgelijke oplossing geïmplementeerd worden in een zelfontwikkelde accelerator?".
+
+Dit gebeurt als start door het uitvoeren van een literatuurstudie die terug te vinden is in hoofdstuk 2 onder Stand van zaken. De implementatie en bjihorende uitwerkingen zijn zowel in een thuisnetwerk evenals in een bedrijfsnetwerk uitgevoerd. Hiervoor was van Delaware uit hardware en een werkomgeving voorzien met de benodigde licenties om dit te realiseren. Dit werd ondersteund door het Delaware Microsoft Integration team.
+
+\section{\IfLanguageName{dutch}{Testomgeving}{Testomgeving}}%
+\label{sec:Testomgeving}
+
+De literatuurstudie omschrijft wat de Data-Accelerator exact is en hoe deze in hun workflow gebruikt wordt. Hierbij werden de benodigde begrippen uitgelegd om dit een vorm te geven. Dit wordt ondersteund door wetenschappelijke artikels en handleidingen opgesteld door softwareontwikkelaars. Deze werden geraadpleegd via Google Scholar en de bibliotheek van HoGent en UGent. Binnen Delaware was de code van de Data-Accelerator software en een korte demo voorzien om snel wegwijs te geraken met diens toepassingen.
+
+Echter om deze Data-Accelerator te gebruiken moet er omgeving opgezet worden in Microsoft Azure. Aan de hand van die korte demo werd er een kant en klare omgeving opgesteld, gebruikmakend van Azure Pipelines om via YAML code deze tot een correcte werking te stellen.
+
+Om deze pipeline uit te voeren moesten er ook BICEP bestanden aangemaakt worden, deze zijn code-gebaseerde bestanden toegepspitst op een deel van de omgeving die benodigd is zoals een databank. Deze zijn getest qua functionaliteit door Dhr. Dedeken zelf om legitimiteit toe te kennen aan de opgezette omgeving. Zodat dit onderzoek binnen de bachelorproef een beter beeld oplevert.
+
+\subsection{\IfLanguageName{dutch}{verloop}{verloop}}%
+\label{sec:Verloop}
 %% TODO: Hoe ben je te werk gegaan? Verdeel je onderzoek in grote fasen, en
 %% licht in elke fase toe welke stappen je gevolgd hebt. Verantwoord waarom je
 %% op deze manier te werk gegaan bent. Je moet kunnen aantonen dat je de best
