@@ -60,6 +60,28 @@ Er is ook een Private DNS zone ogezet om bij het gebruik van een Virtual network
 Als laatste is er een Keyvault toegevoegd. Deze bevat aanmeldingsgegevens en andere waarden die versleuteld zijn zodat die dan in de pipeline opgehaald en gebruikt kunnen worden op een veilige manier.
 
 Na het opstellen van deze omgeving manueel, zijn de hierboven benoemde delen omgezet naar ARM templates. Deze zijn op hun beurt omgevormd tot BICEP templates vanwege de hiervoor benoemde problemen die zich kunnen voordoen bij ARM. De templates zijn zodanig opgesteld dat ze automatisch de juiste naamgeving bevatten en samen kunnen werken. Deze zijn zichtbaar in bijlage B.6 BICEP.
+
+\subsection{\IfLanguageName{dutch}{Pipeline}{Pipeline}}%
+\label{sec:Pipeline}
+
+De BICEP bestanden die in voorgaande stage van de uitwerking aangemaakt zijn. Moeten nu via een pipeline geïntegrerd worden in Azure om zo de gehele omgeving op te zetten. Deze pipeline is te vinden in bijlage B.7 YAML. Deze is opgesteld met parameters die geïmporteerd worden uit een ander bestand zodat men deze kan personaliseren per omgeving waarin men de Data-Accelerator wenst te gebruiken. Hierdoor kan men aan de pipeline zelf niks veranderen maar wel de benamingen en specificaties doorgeven aan de BICEP templates, Azure Command Line Interface en het PowerShell script.
+
+Eerst en vooral ziet men bovenaan het script enkele parameters staat die men dan kan selecteren om de omgeving naar wens op te zetten. Deze parameters omvatten de opties om een Virtual network aan te maken, de databank op te vullen met test data, de XSLT mappings en queries die men wilt uitvoeren met de Data-Accelerator op te slaan in het Storage Account en de Resource Group waarin men wilt te werk gaan. Dit kan teruggevonden worden in bijlage B.8 Opties.
+
+Deze wordt opgevolgd door een check  van de AIS deployment resources en worden deze ook aangemaakt. Hierbij wordt een Azure CLI script uitgevoerd die een Resource Group creëert binnen de gespecifieerde locatie.
+
+Daarna wordt ook via de Azure CLI een Private DNS zone opgesteld binnenin de Resource Group volgens de naamgeving die in de parameters meegegeven is. Dit wordt opgevolgd door het aanmaken van een Virtual network via de Azure CLI die dan de correcte naamgeving voorziet evenals de Resource Group, locatie en subnetten die meegegeven worden bij de variabelen die naar wens kunnen aangepast worden.
+
+De hier op volgende stage binnen de pipeline spitst zich toe op het valideren van de BICEP templates. Dit gebeurt op basis van enkele testen die uitgevoerd worden en de syntax die nagekeken wordt. Op deze manier kunnen fouten in de BICEP bestanden vroeg in het proces gedetecteerd en aangepakt worden.
+
+De provision stage maakt dan alle resources aan binnen de omgeving volgens de BICEP templates die opgesteld zijn. Dit proces neemt het grootste deel van de uitvoering in beslag maar verloopt ook volledig automatisch.
+
+Het deel dat hierop volgt slaat het PowerShell bestand dat benodigt is al men de databank wilt vullen op in het Storage Account en voert deze dan ook uit indien de optie geslecteerd is. Deze is zichtbaar in bijlage B.9 PowerShell. Dit script is ook personaliseerbaar via de variabelen die gebruikt worden in de pipeline en zijn doorgegeven aan het script om de correcte connectionstring op te stellen om toegang te verkrijgen tot de databank.
+
+Ten laatste worden de overige bestanden, namelijk die XSLT mappings en queries ook indien de optie geslecteerd is, in het Storage Account opgeslagen zodat men kan gebruik maken van XSLT met de Data-Accelerator.
+
+Deze stappen worden dan bij de opstart van de pipeline doorlopen op basis van geselecteerde opties zoals verduidelijkt bij de pipeline. Dit proces neemt gemiddeld een vijftiental minuten in beslag waarna de volledige omgeving aangemaakt is en bijna klaar is voor gebruik.
+Het engiste dat nog moet gebeuren is de connectionstring naar de SQL databank en de Storage Account toevoegen bij de local settings van de Data-Accelerator. Als men nu de accelerator laat draaien kan men via gepersonaliseerde requests data opvragen en bewerken uit de gecreëerde databank. Van hier uit wordt er bekeken hoe men extra functionaliteit omtrent GraphQL of gelijkmatige Azure toepassingen kan toevoegen.
 %% TODO: Hoe ben je te werk gegaan? Verdeel je onderzoek in grote fasen, en
 %% licht in elke fase toe welke stappen je gevolgd hebt. Verantwoord waarom je
 %% op deze manier te werk gegaan bent. Je moet kunnen aantonen dat je de best
